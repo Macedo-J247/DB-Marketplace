@@ -109,18 +109,14 @@ CREATE TABLE "suporte" (
 CREATE TABLE "avaliacao" (
     "id_avaliacao" SERIAL PRIMARY KEY,
     "usuario_id" INT NOT NULL,
-    "produto_id" INT NOT NULL,
-    "versao_id" INT,
+    "versao_id" INT NOT NULL,
     "nota" DECIMAL(3, 2) NOT NULL,
     "data_avaliacao" DATE NOT NULL,
     CONSTRAINT "UQ_avaliacao_usuario_produto"
-        UNIQUE ("usuario_id", "produto_id"),
+        UNIQUE ("usuario_id", "versao_id"),
     CONSTRAINT "FK_avaliacao_usuario_id"
         FOREIGN KEY ("usuario_id")
             REFERENCES "usuario"("id_usuario"),
-    CONSTRAINT "FK_avaliacao_produto_id"
-        FOREIGN KEY ("produto_id")
-            REFERENCES "produto"("id_produto"),
     CONSTRAINT "FK_avaliacao_versao_id"
         FOREIGN KEY ("versao_id")
             REFERENCES "versao"("id_versao")

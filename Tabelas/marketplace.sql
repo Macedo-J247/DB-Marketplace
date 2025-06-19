@@ -163,3 +163,33 @@ CREATE TABLE "parcela" (
         FOREIGN KEY ("assinatura_id")
             REFERENCES "assinatura"("id_assinatura")
 );
+
+-- função para validar o preço de um produto
+CREATE OR REPLACE FUNCTION validar_preco_produto()
+returns trigger as $$
+BEGIN
+IF NEW.preco <= 0 THEN
+RAISE EXCEPTION 'O preço do produto %" deve ser um valor positivo.', NEW.nome_produto;
+END IF;
+RETURN NEW;
+END;
+$$ LANGUAGE PLPGSQL;
+-- Trigger para validar o preço antes de inserir ou atualizar um produto
+CREATE Trigger trg_validar_preco_produto
+before insert or update on produto
+FOR EACH ROW
+EXECUTE FUNCTION validar_preco_produto();
+
+CREATE OR REPLACE FUNCTION atualizar_data_atualizacao_produto()
+RETURNS TRIGGER AS $$
+BEGIN
+NEW.data_atualizacao = NOW();
+RETURN NEW;
+END;
+$$ LANGUAGE PLPGSQL;
+-- Trigger que chama a função antes de qualquer UPDATE na tabela produto
+CREATE TRIGGER trg_produto_data_atualizacao
+before on update on produto
+FOR EACH ROW
+EXECUTE FUNCTION atualizar_data_atualizacao_produto();
+

@@ -1,6 +1,8 @@
--- Este arquivo contém a função para validar a nota de uma avaliação.
--- Ela garante que a nota esteja dentro de um intervalo válido (0.00 a 5.00).
+-- Este arquivo contém todas as funções (PL/pgSQL) relacionadas à tabela "avaliacao".
 
+-- Função: validar_nota_avaliacao
+-- Objetivo: Garante que a nota de uma avaliação esteja dentro de um intervalo válido.
+-- Acionada por: Trigger trg_validar_nota_avaliacao (antes de INSERT/UPDATE)
 CREATE OR REPLACE FUNCTION validar_nota_avaliacao()
 RETURNS TRIGGER AS $$
 BEGIN

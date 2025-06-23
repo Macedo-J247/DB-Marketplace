@@ -1,10 +1,12 @@
--- Este arquivo contém a função para verificar o status de um produto antes de permitir uma assinatura.
--- Ela impede que usuários assinem produtos que não estejam com o status 'ativo'.
+-- Este arquivo contém todas as funções (PL/pgSQL) relacionadas à tabela "assinatura".
 
+-- Função: verificar_status_produto_assinatura
+-- Objetivo: Impede que usuários assinem produtos que não estejam com o status 'ativo'.
+-- Acionada por: Trigger trg_impedir_assinatura_produto_inativo (antes de INSERT)
 CREATE OR REPLACE FUNCTION verificar_status_produto_assinatura()
 RETURNS TRIGGER AS $$
 DECLARE
-    v_status_produto enum_status_produto; -- USANDO O TIPO ENUM NOMEADO
+    v_status_produto enum_status_produto; -- Usando o tipo ENUM nomeado
     v_nome_produto VARCHAR(255);
 BEGIN
     -- Busca o status e o nome do produto associado à versão que está sendo assinada.

@@ -1,7 +1,8 @@
--- Este arquivo contém a função para registrar a data de pagamento de uma parcela.
--- Se o status de uma parcela muda para 'pago' e a data de pagamento ainda não está definida,
--- ela é preenchida automaticamente com a data atual.
+-- Este arquivo contém todas as funções (PL/pgSQL) relacionadas à tabela "parcela".
 
+-- Função: registrar_data_pagamento_parcela
+-- Objetivo: Registra automaticamente a data em que uma parcela foi paga.
+-- Acionada por: Trigger trg_parcela_data_pagamento (antes de UPDATE)
 CREATE OR REPLACE FUNCTION registrar_data_pagamento_parcela()
 RETURNS TRIGGER AS $$
 BEGIN

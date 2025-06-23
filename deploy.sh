@@ -30,7 +30,7 @@ execute_sql_file() {
     fi
 }
 
-echo "Iniciando a implantação do schema do Marketplace..."
+echo "Iniciando a implantação do schema do Marketplace com a estrutura tabela-centrada..."
 echo "Conectando ao banco de dados: '$DB_NAME' como usuário: '$DB_USER'..."
 
 # --- Ordem de Execução ---
@@ -38,32 +38,30 @@ echo "Conectando ao banco de dados: '$DB_NAME' como usuário: '$DB_USER'..."
 # 0. Executar os ENUMs (Precisam ser criados antes das tabelas e funções que os usam)
 echo ""
 echo "--- 0. Executando Definição de Tipos ENUM ---"
-execute_sql_file ddl/enum_types.sql
+execute_sql_file database/types/enum_types.sql
 
-# 1. Executar o DDL (Definição das Tabelas)
+# 1. Executar o DDL Principal (Todas as Tabelas)
 echo ""
-echo "--- 1. Executando Definição de Dados (DDL) ---"
-execute_sql_file ddl/marketplace.sql
+echo "--- 1. Executando Definição de Dados (DDL) das Tabelas ---"
+execute_sql_file database/ddl/marketplace.sql
 
-# 2. Executar as Funções (Precisam existir antes dos Triggers)
+# 2. Executar Funções (agrupadas por tabela)
 echo ""
 echo "--- 2. Executando Funções (PL/pgSQL) ---"
-execute_sql_file functions/produtos/func_validar_preco_produto.sql
-execute_sql_file functions/produtos/func_atualizar_data_atualizacao_produto.sql
-execute_sql_file functions/parcelas/func_registrar_data_pagamento_parcela.sql
-execute_sql_file functions/avaliacoes/func_validar_nota_avaliacao.sql
-execute_sql_file functions/assinaturas/func_verificar_status_produto_assinatura.sql
-# Adicione aqui todos os outros arquivos de função que você criar
+execute_sql_file database/produto/functions/produto_functions.sql
+execute_sql_file database/parcela/functions/parcela_functions.sql
+execute_sql_file database/avaliacao/functions/avaliacao_functions.sql
+execute_sql_file database/assinatura/functions/assinatura_functions.sql
+# Adicione aqui todos os outros arquivos de funções por tabela que você criar
 
-# 3. Executar os Triggers (Dependem das Funções e Tabelas)
+# 3. Executar os Triggers (agrupados por tabela)
 echo ""
 echo "--- 3. Executando Triggers ---"
-execute_sql_file triggers/produtos/trg_validar_preco_produto.sql
-execute_sql_file triggers/produtos/trg_produto_data_atualizacao.sql
-execute_sql_file triggers/parcelas/trg_parcela_data_pagamento.sql
-execute_sql_file triggers/avaliacoes/trg_validar_nota_avaliacao.sql
-execute_sql_file triggers/assinaturas/trg_impedir_assinatura_produto_inativo.sql
-# Adicione aqui todos os outros arquivos de trigger que você criar
+execute_sql_file database/produto/triggers/produto_triggers.sql
+execute_sql_file database/parcela/triggers/parcela_triggers.sql
+execute_sql_file database/avaliacao/triggers/avaliacao_triggers.sql
+execute_sql_file database/assinatura/triggers/assinatura_triggers.sql
+# Adicione aqui todos os outros arquivos de triggers por tabela que você criar
 
 echo ""
 echo "Implantação do schema do Marketplace concluída com sucesso!"

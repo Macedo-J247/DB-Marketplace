@@ -108,4 +108,39 @@ CREATE OR REPLACE FUNCTION buscar_categoria(b_nome VARCHAR) RETURNS TABLE (id IN
     END;
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION listar_categorias()
+RETURNS TABLE (
+    id INT,
+    nome VARCHAR,
+    descricao VARCHAR
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        id_categoria,
+        nome_categoria,
+        descricao_categoria
+    FROM categoria;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION contar_produtos_por_categoria()
+RETURNS TABLE (
+    categoria_id INT,
+    nome_categoria VARCHAR,
+    total_produtos INT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        c.id_categoria,
+        c.nome_categoria,
+        COUNT(p.id_produto) AS total_produtos
+    FROM categoria c
+    LEFT JOIN produto p ON p.categoria_id = c.id_categoria
+    GROUP BY c.id_categoria, c.nome_categoria;
+END;
+$$ LANGUAGE plpgsql;
+
+
 -- Triggers

@@ -203,4 +203,143 @@ BEGIN
 END;
 $$;
 
+-- listar devs e produtos
+CREATE OR REPLACE FUNCTION listar_produtos()
+RETURNS TABLE (
+    id INT,
+    nome VARCHAR,
+    descricao TEXT,
+    preco NUMERIC,
+    tipo TIPOS_PRODUTOS,
+    status STATUS_PRODUTOS,
+    data_publicacao DATE,
+    data_atualizacao DATE,
+    nome_desenvolvedor VARCHAR,
+    nome_categoria VARCHAR
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        p.id_produto,
+        p.nome_produto,
+        p.descricao,
+        p.preco,
+        p.tipo,
+        p.status,
+        p.data_publicacao,
+        p.data_atualizacao,
+        d.nome_dev,
+        c.nome_categoria
+    FROM produto p
+    JOIN desenvolvedor d ON d.id_desenvolvedor = p.desenvolvedor_id
+    JOIN categoria c ON c.id_categoria = p.categoria_id;
+END;
+$$ LANGUAGE plpgsql;
+
+-- busca por nome
+CREATE OR REPLACE FUNCTION buscar_produtos_por_nome(p_nome TEXT)
+RETURNS TABLE (
+    id INT,
+    nome VARCHAR,
+    tipo TIPOS_PRODUTOS,
+    status STATUS_PRODUTOS,
+    preco NUMERIC
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        id_produto,
+        nome_produto,
+        tipo,
+        status,
+        preco
+    FROM produto
+    WHERE nome_produto ILIKE '%' || p_nome || '%';
+END;
+$$ LANGUAGE plpgsql;
+
+-- listar por status da categoria
+CREATE OR REPLACE FUNCTION listar_produtos_por_categoria_status(
+    p_categoria_id INT DEFAULT NULL,
+    p_status STATUS_PRODUTOS DEFAULT NULL
+)
+RETURNS TABLE (
+    id INT,
+    nome VARCHAR,
+    status STATUS_PRODUTOS,
+    tipo TIPOS_PRODUTOS,
+    categoria_id INT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        id_produto,
+        nome_produto,
+        status,
+        tipo,
+        categoria_id
+    FROM produto
+    WHERE
+        (p_categoria_id IS NULL OR categoria_id = p_categoria_id) AND
+        (p_status IS NULL OR status = p_status);
+END;
+$$ LANGUAGE plpgsql;
+
+-- contar
+CREATE OR REPLACE FUNCTION contar_produtos_por_tipo()
+RETURNS TABLE (
+    tipo TIPOS_PRODUTOS,
+    quantidade INT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        tipo,
+        COUNT(*) AS quantidade
+    FROM produto
+    GROUP BY tipo;
+END;
+$$ LANGUAGE plpgsql;
+
+
 -- Triggers
+
+-- atualizar data
+CREATE OR REPLACE FUNCTION atualizar_data_modificacao()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.data_atualizacao := CURRENT_DATE;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_data_modificacao
+BEFORE UPDATE ON produto
+FOR EACH ROW
+EXECUTE FUNCTION atualizar_data_modificacao();
+
+-- impedir ativação de produto sem versão
+CREATE OR REPLACE FUNCTION verificar_versao_antes_ativar()
+RETURNS TRIGGER AS $$
+DECLARE
+    versao_existe BOOLEAN;
+BEGIN
+    IF NEW.status = 'ativo' AND OLD.status IS DISTINCT FROM 'ativo' THEN
+        SELECT EXISTS (
+            SELECT 1 FROM versao WHERE produto_id = NEW.id_produto
+        ) INTO versao_existe;
+
+        IF NOT versao_existe THEN
+            RAISE EXCEPTION 'Produto não pode ser ativado sem ao menos uma versão publicada.';
+        END IF;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_verificar_versao_antes_ativar
+BEFORE UPDATE ON produto
+FOR EACH ROW
+EXECUTE FUNCTION verificar_versao_antes_ativar();
+

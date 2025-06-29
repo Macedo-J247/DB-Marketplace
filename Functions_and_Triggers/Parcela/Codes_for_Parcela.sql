@@ -188,4 +188,126 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION listar_parcelas()
+RETURNS TABLE (
+    id INT,
+    valor NUMERIC,
+    vencimento DATE,
+    pagamento DATE,
+    status STATUS_PARCELA,
+    nome_usuario VARCHAR,
+    nome_produto VARCHAR,
+    num_versao VARCHAR
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        p.id_parcela,
+        p.valor,
+        p.data_vencimento,
+        p.data_pagamento,
+        p.status,
+        u.nome_usuario,
+        pr.nome_produto,
+        v.num_versao
+    FROM parcela p
+    JOIN assinatura a ON a.id_assinatura = p.assinatura_id
+    JOIN usuario u ON u.id_usuario = a.usuario_id
+    JOIN versao v ON v.id_versao = a.versao_id
+    JOIN produto pr ON pr.id_produto = v.produto_id;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION listar_parcelas_por_status(p_status STATUS_PARCELA)
+RETURNS TABLE (
+    id INT,
+    valor NUMERIC,
+    vencimento DATE,
+    status STATUS_PARCELA,
+    usuario VARCHAR
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        p.id_parcela,
+        p.valor,
+        p.data_vencimento,
+        p.status,
+        u.nome_usuario
+    FROM parcela p
+    JOIN assinatura a ON a.id_assinatura = p.assinatura_id
+    JOIN usuario u ON u.id_usuario = a.usuario_id
+    WHERE p.status = p_status;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION listar_parcelas_em_atraso()
+RETURNS TABLE (
+    id INT,
+    valor NUMERIC,
+    vencimento DATE,
+    status STATUS_PARCELA,
+    usuario VARCHAR
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        p.id_parcela,
+        p.valor,
+        p.data_vencimento,
+        p.status,
+        u.nome_usuario
+    FROM parcela p
+    JOIN assinatura a ON a.id_assinatura = p.assinatura_id
+    JOIN usuario u ON u.id_usuario = a.usuario_id
+    WHERE p.status = 'pendendte'
+      AND p.data_vencimento < CURRENT_DATE;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION total_pago_por_usuario(p_usuario_id INT)
+RETURNS NUMERIC AS $$
+DECLARE
+    total NUMERIC;
+BEGIN
+    SELECT COALESCE(SUM(p.valor), 0)
+    INTO total
+    FROM parcela p
+    JOIN assinatura a ON a.id_assinatura = p.assinatura_id
+    WHERE a.usuario_id = p_usuario_id AND p.status = 'pago';
+
+    RETURN total;
+END;
+$$ LANGUAGE plpgsql;
+
+
 -- Triggers
+CREATE OR REPLACE FUNCTION atualizar_status_atrasado()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.status = 'pendendte' AND NEW.data_vencimento < CURRENT_DATE THEN
+        NEW.status := 'atrasado';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_atualizar_status_atraso
+BEFORE INSERT OR UPDATE ON parcela
+FOR EACH ROW
+EXECUTE FUNCTION atualizar_status_atrasado();
+
+CREATE OR REPLACE FUNCTION validar_valor_parcela()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.valor <= 0 THEN
+        RAISE EXCEPTION 'O valor da parcela deve ser maior que zero.';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_validar_valor_parcela
+BEFORE INSERT OR UPDATE ON parcela
+FOR EACH ROW
+EXECUTE FUNCTION validar_valor_parcela();

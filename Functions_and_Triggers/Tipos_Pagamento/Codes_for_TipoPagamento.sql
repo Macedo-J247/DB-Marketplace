@@ -128,4 +128,35 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION listar_tipos_pagamento()
+RETURNS TABLE (
+    id INT,
+    nome TIPOS_PAGAMENTOS
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        id_tipo_pagamento,
+        nome_tipo
+    FROM tipo_pagamento;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION contar_assinaturas_por_tipo_pagamento()
+RETURNS TABLE (
+    tipo_pagamento TIPOS_PAGAMENTOS,
+    total_assinaturas INT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        tp.nome_tipo,
+        COUNT(a.id_assinatura)
+    FROM tipo_pagamento tp
+    LEFT JOIN assinatura a ON a.tipo_pagamento_id = tp.id_tipo_pagamento
+    GROUP BY tp.nome_tipo;
+END;
+$$ LANGUAGE plpgsql;
+
+
 -- Triggers

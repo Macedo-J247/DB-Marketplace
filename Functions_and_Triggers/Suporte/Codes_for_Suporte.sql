@@ -145,4 +145,95 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION listar_suportes()
+RETURNS TABLE (
+    id INT,
+    usuario VARCHAR,
+    produto VARCHAR,
+    versao VARCHAR,
+    tipo TIPOS_SUPORTES,
+    status STATUS_SUPORTE,
+    data TIMESTAMP,
+    descricao TEXT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        s.id_suporte,
+        u.nome_usuario,
+        p.nome_produto,
+        v.num_versao,
+        s.tipo,
+        s.status,
+        s.data_suporte,
+        s.descricao
+    FROM suporte s
+    JOIN usuario u ON u.id_usuario = s.usuario_id
+    JOIN produto p ON p.id_produto = s.produto_id
+    JOIN versao v ON v.id_versao = s.versao_id;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION buscar_suporte_por_usuario(p_nome TEXT)
+RETURNS TABLE (
+    id INT,
+    tipo TIPOS_SUPORTES,
+    status STATUS_SUPORTE,
+    data TIMESTAMP,
+    descricao TEXT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        s.id_suporte,
+        s.tipo,
+        s.status,
+        s.data_suporte,
+        s.descricao
+    FROM suporte s
+    JOIN usuario u ON u.id_usuario = s.usuario_id
+    WHERE u.nome_usuario ILIKE '%' || p_nome || '%';
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION listar_suportes_ativos()
+RETURNS TABLE (
+    id INT,
+    usuario VARCHAR,
+    produto VARCHAR,
+    tipo TIPOS_SUPORTES,
+    status STATUS_SUPORTE,
+    data TIMESTAMP
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        s.id_suporte,
+        u.nome_usuario,
+        p.nome_produto,
+        s.tipo,
+        s.status,
+        s.data_suporte
+    FROM suporte s
+    JOIN usuario u ON u.id_usuario = s.usuario_id
+    JOIN produto p ON p.id_produto = s.produto_id
+    WHERE s.status IN ('aberto', 'em andamento');
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION contar_suportes_por_status()
+RETURNS TABLE (
+    status STATUS_SUPORTE,
+    total INT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        status,
+        COUNT(*)
+    FROM suporte
+    GROUP BY status;
+END;
+$$ LANGUAGE plpgsql;
+
 -- Triggers

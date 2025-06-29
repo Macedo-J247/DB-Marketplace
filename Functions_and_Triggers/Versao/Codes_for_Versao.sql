@@ -194,6 +194,82 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION listar_versoes()
+RETURNS TABLE (
+    id INT,
+    produto_id INT,
+    nome_produto VARCHAR,
+    num_versao VARCHAR,
+    data_lancamento DATE
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        v.id_versao,
+        v.produto_id,
+        p.nome_produto,
+        v.num_versao,
+        v.data_lancamento
+    FROM versao v
+    JOIN produto p ON p.id_produto = v.produto_id;
+END;
+$$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION buscar_versoes_por_nome_produto(p_nome TEXT)
+RETURNS TABLE (
+    id INT,
+    nome_produto VARCHAR,
+    num_versao VARCHAR,
+    data_lancamento DATE
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        v.id_versao,
+        p.nome_produto,
+        v.num_versao,
+        v.data_lancamento
+    FROM versao v
+    JOIN produto p ON p.id_produto = v.produto_id
+    WHERE p.nome_produto ILIKE '%' || p_nome || '%';
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION buscar_ultima_versao(p_produto_id INT)
+RETURNS TABLE (
+    id INT,
+    num_versao VARCHAR,
+    data_lancamento DATE
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        id_versao,
+        num_versao,
+        data_lancamento
+    FROM versao
+    WHERE produto_id = p_produto_id
+    ORDER BY data_lancamento DESC
+    LIMIT 1;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION contar_versoes_por_produto()
+RETURNS TABLE (
+    produto_id INT,
+    nome_produto VARCHAR,
+    total_versoes INT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        v.produto_id,
+        p.nome_produto,
+        COUNT(*) AS total_versoes
+    FROM versao v
+    JOIN produto p ON p.id_produto = v.produto_id
+    GROUP BY v.produto_id, p.nome_produto;
+END;
+$$ LANGUAGE plpgsql;
 
 -- Triggers

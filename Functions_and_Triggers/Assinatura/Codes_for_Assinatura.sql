@@ -1,5 +1,5 @@
 -- Funções
--- 1) INSERIR ASSINATURA
+-- Inserção automatizada
 CREATE OR REPLACE FUNCTION cadastrar_assinatura(
     i_usuario_id         INT,
     i_versao_id          INT,
@@ -65,10 +65,9 @@ BEGIN
 
     RETURN v_id;
 END;
-$$;
+$$ LANGUAGE plpgsql;
 
-
--- 2) ATUALIZAR ASSINATURA
+-- Atualização automatizada
 CREATE OR REPLACE FUNCTION atualizar_assinatura(
     u_id_assinatura      INT,
     u_usuario_id         INT                  DEFAULT NULL,
@@ -77,114 +76,91 @@ CREATE OR REPLACE FUNCTION atualizar_assinatura(
     u_data_inicio        DATE                 DEFAULT NULL,
     u_data_termino       DATE                 DEFAULT NULL,
     u_status             STATUS_ASSINATURA    DEFAULT NULL
-) RETURNS INT
-LANGUAGE plpgsql AS
-$$
-DECLARE
-    v_old RECORD;
-    v_new_inicio DATE;
-    v_new_termino DATE;
-BEGIN
-    -- 2.1) existe?
-    SELECT * INTO v_old
-      FROM "assinatura"
-     WHERE "id_assinatura" = u_id_assinatura;
-    IF NOT FOUND THEN
-        RAISE NOTICE 'Assinatura ID % não encontrada.', u_id_assinatura;
-        RETURN NULL;
-    END IF;
+) RETURNS INT AS $$
+    DECLARE
+        d_old RECORD;
+        v_new_inicio DATE;
+        v_new_termino DATE;
+    BEGIN
+        -- 2.1) existe?
+        SELECT * INTO d_old
+        FROM "assinatura"
+        WHERE "id_assinatura" = u_id_assinatura;
+        IF NOT FOUND THEN
+            RAISE NOTICE 'Assinatura ID % não encontrada.', u_id_assinatura;
+            RETURN NULL;
+        END IF;
 
-    -- define os valores finais
-    u_usuario_id        := COALESCE(u_usuario_id,       v_old.usuario_id);
-    u_versao_id         := COALESCE(u_versao_id,        v_old.versao_id);
-    u_tipo_pagamento_id := COALESCE(u_tipo_pagamento_id, v_old.tipo_pagamento_id);
-    u_data_inicio       := COALESCE(u_data_inicio,      v_old.data_inicio);
-    u_data_termino      := COALESCE(u_data_termino,     v_old.data_termino);
-    u_status            := COALESCE(u_status,           v_old.status);
+        -- define os valores finais
+        u_usuario_id        := COALESCE(u_usuario_id,       d_old.usuario_id);
+        u_versao_id         := COALESCE(u_versao_id,        d_old.versao_id);
+        u_tipo_pagamento_id := COALESCE(u_tipo_pagamento_id, d_old.tipo_pagamento_id);
+        u_data_inicio       := COALESCE(u_data_inicio,      d_old.data_inicio);
+        u_data_termino      := COALESCE(u_data_termino,     d_old.data_termino);
+        u_status            := COALESCE(u_status,           d_old.status);
 
-    -- 2.2) validações de FK
-    IF NOT EXISTS (SELECT 1 FROM "usuario" WHERE "id_usuario" = u_usuario_id) THEN
-        RAISE NOTICE 'Usuário ID % não encontrado.', u_usuario_id;
-        RETURN NULL;
-    END IF;
-    IF NOT EXISTS (SELECT 1 FROM "versao" WHERE "id_versao" = u_versao_id) THEN
-        RAISE NOTICE 'Versão ID % não encontrada.', u_versao_id;
-        RETURN NULL;
-    END IF;
-    IF NOT EXISTS (SELECT 1 FROM "tipo_pagamento" WHERE "id_tipo_pagamento" = u_tipo_pagamento_id) THEN
-        RAISE NOTICE 'Tipo de pagamento ID % não encontrado.', u_tipo_pagamento_id;
-        RETURN NULL;
-    END IF;
+        -- 2.2) validações de FK
+        IF NOT EXISTS (SELECT 1 FROM "usuario" WHERE "id_usuario" = u_usuario_id) THEN
+            RAISE NOTICE 'Usuário ID % não encontrado.', u_usuario_id;
+            RETURN NULL;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM "versao" WHERE "id_versao" = u_versao_id) THEN
+            RAISE NOTICE 'Versão ID % não encontrada.', u_versao_id;
+            RETURN NULL;
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM "tipo_pagamento" WHERE "id_tipo_pagamento" = u_tipo_pagamento_id) THEN
+            RAISE NOTICE 'Tipo de pagamento ID % não encontrado.', u_tipo_pagamento_id;
+            RETURN NULL;
+        END IF;
 
-    -- 2.3) data término depois de início
-    IF u_data_termino IS NOT NULL
-       AND u_data_termino < u_data_inicio THEN
-        RAISE NOTICE 'Data término não pode ser anterior à data início.';
-        RETURN NULL;
-    END IF;
+        -- 2.3) data término depois de início
+        IF u_data_termino IS NOT NULL
+        AND u_data_termino < u_data_inicio THEN
+            RAISE NOTICE 'Data término não pode ser anterior à data início.';
+            RETURN NULL;
+        END IF;
 
-    -- 2.4) executa update
-    UPDATE "assinatura"
-       SET "usuario_id"        = u_usuario_id,
-           "versao_id"         = u_versao_id,
-           "tipo_pagamento_id" = u_tipo_pagamento_id,
-           "data_inicio"       = u_data_inicio,
-           "data_termino"      = u_data_termino,
-           "status"            = u_status
-     WHERE "id_assinatura" = u_id_assinatura;
+        -- 2.4) executa update
+        UPDATE "assinatura"
+        SET "usuario_id"        = u_usuario_id,
+            "versao_id"         = u_versao_id,
+            "tipo_pagamento_id" = u_tipo_pagamento_id,
+            "data_inicio"       = u_data_inicio,
+            "data_termino"      = u_data_termino,
+            "status"            = u_status
+        WHERE "id_assinatura" = u_id_assinatura;
 
-    RETURN u_id_assinatura;
-END;
-$$;
+        RETURN u_id_assinatura;
+    END;
+$$ LANGUAGE plpgsql;
 
+-- Remoção automatizada
+CREATE OR REPLACE FUNCTION excluir_assinatura(d_id_assinatura INT, d_usuario_id INT) RETURNS TEXT AS $$
+    DECLARE
+        d_old RECORD;
+    BEGIN
+        SELECT * INTO d_old FROM "assinatura"
+        WHERE "id_assinatura" = d_id_assinatura;
+        IF NOT FOUND THEN
+            RETURN format('Assinatura ID %s não encontrada.', d_id_assinatura);
+        END IF;
 
--- 3) EXCLUIR ASSINATURA
-CREATE OR REPLACE FUNCTION excluir_assinatura(
-    d_id_assinatura   INT,
-    d_usuario_id      INT
-) RETURNS TEXT
-LANGUAGE plpgsql AS
-$$
-DECLARE
-    v_old RECORD;
-BEGIN
-    -- 3.1) existe?
-    SELECT * INTO v_old
-      FROM "assinatura"
-     WHERE "id_assinatura" = d_id_assinatura;
-    IF NOT FOUND THEN
-        RETURN format('Assinatura ID %s não encontrada.', d_id_assinatura);
-    END IF;
+        IF d_old.usuario_id <> d_usuario_id THEN
+            RETURN format('Não confere: a assinatura %s não pertence ao usuário %s.', d_id_assinatura, d_usuario_id);
+        END IF;
 
-    -- 3.2) confere usuário
-    IF v_old.usuario_id <> d_usuario_id THEN
-        RETURN format(
-          'Não confere: a assinatura %s não pertence ao usuário %s.',
-          d_id_assinatura, d_usuario_id
-        );
-    END IF;
+        IF EXISTS (
+            SELECT 1 FROM "parcela"
+            WHERE "assinatura_id" = d_id_assinatura
+        ) THEN
+            RETURN format('Não foi possível excluir: existem parcelas vinculadas à assinatura %s.', d_id_assinatura);
+        END IF;
 
-    -- 3.3) bloqueia se houver parcelas
-    IF EXISTS (
-        SELECT 1 FROM "parcela"
-         WHERE "assinatura_id" = d_id_assinatura
-    ) THEN
-        RETURN format(
-          'Não foi possível excluir: existem parcelas vinculadas à assinatura %s.',
-          d_id_assinatura
-        );
-    END IF;
+        DELETE FROM "assinatura"
+        WHERE "id_assinatura" = d_id_assinatura;
 
-    -- 3.4) exclui
-    DELETE FROM "assinatura"
-     WHERE "id_assinatura" = d_id_assinatura;
-
-    -- 3.5) mensagem
-    RETURN format(
-      'Assinatura %s do usuário %s excluída com sucesso.',
-      d_id_assinatura, d_usuario_id
-    );
-END;
-$$;
+        RETURN format('Assinatura %s do usuário %s excluída com sucesso.', d_id_assinatura, d_usuario_id);
+    END;
+$$ LANGUAGE plpgsql;
 
 -- Triggers

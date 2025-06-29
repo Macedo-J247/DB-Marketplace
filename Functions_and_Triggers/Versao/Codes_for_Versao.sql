@@ -1,5 +1,5 @@
 -- Funções
--- 1) INSERIR VERSÃO
+-- Inserção automatizada
 CREATE OR REPLACE FUNCTION cadastrar_versao(
     i_produto_id      INT,
     i_num_versao      VARCHAR,
@@ -69,8 +69,7 @@ BEGIN
 END;
 $$;
 
-
--- 2) ATUALIZAR VERSÃO
+-- Atualização automatizada
 CREATE OR REPLACE FUNCTION atualizar_versao(
     u_id_versao       INT,
     u_produto_id      INT         DEFAULT NULL,
@@ -145,8 +144,7 @@ BEGIN
 END;
 $$;
 
-
--- 3) EXCLUIR VERSÃO
+-- Remoção automatizada
 CREATE OR REPLACE FUNCTION excluir_versao(
     d_id_versao   INT,
     d_num_versao  VARCHAR

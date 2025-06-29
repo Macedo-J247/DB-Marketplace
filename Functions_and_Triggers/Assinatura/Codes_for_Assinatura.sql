@@ -163,4 +163,133 @@ CREATE OR REPLACE FUNCTION excluir_assinatura(d_id_assinatura INT, d_usuario_id 
     END;
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION listar_assinaturas()
+RETURNS TABLE (
+    id INT,
+    usuario VARCHAR,
+    produto VARCHAR,
+    versao VARCHAR,
+    status STATUS_ASSINATURA,
+    tipo_pagamento TIPOS_PAGAMENTOS,
+    data_inicio DATE,
+    data_termino DATE
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        a.id_assinatura,
+        u.nome_usuario,
+        p.nome_produto,
+        v.num_versao,
+        a.status,
+        tp.nome_tipo,
+        a.data_inicio,
+        a.data_termino
+    FROM assinatura a
+    JOIN usuario u ON u.id_usuario = a.usuario_id
+    JOIN versao v ON v.id_versao = a.versao_id
+    JOIN produto p ON p.id_produto = v.produto_id
+    JOIN tipo_pagamento tp ON tp.id_tipo_pagamento = a.tipo_pagamento_id;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION buscar_assinaturas_por_usuario(p_usuario_id INT)
+RETURNS TABLE (
+    id INT,
+    nome_produto VARCHAR,
+    versao VARCHAR,
+    status STATUS_ASSINATURA,
+    data_inicio DATE,
+    data_termino DATE
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        a.id_assinatura,
+        p.nome_produto,
+        v.num_versao,
+        a.status,
+        a.data_inicio,
+        a.data_termino
+    FROM assinatura a
+    JOIN versao v ON v.id_versao = a.versao_id
+    JOIN produto p ON p.id_produto = v.produto_id
+    WHERE a.usuario_id = p_usuario_id;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION listar_assinaturas_ativas()
+RETURNS TABLE (
+    id INT,
+    usuario VARCHAR,
+    produto VARCHAR,
+    versao VARCHAR,
+    data_inicio DATE,
+    data_termino DATE
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        a.id_assinatura,
+        u.nome_usuario,
+        p.nome_produto,
+        v.num_versao,
+        a.data_inicio,
+        a.data_termino
+    FROM assinatura a
+    JOIN usuario u ON u.id_usuario = a.usuario_id
+    JOIN versao v ON v.id_versao = a.versao_id
+    JOIN produto p ON p.id_produto = v.produto_id
+    WHERE a.status = 'ativa';
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION contar_assinaturas_por_status()
+RETURNS TABLE (
+    status STATUS_ASSINATURA,
+    total INT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        status,
+        COUNT(*)
+    FROM assinatura
+    GROUP BY status;
+END;
+$$ LANGUAGE plpgsql;
+
 -- Triggers
+CREATE OR REPLACE FUNCTION impedir_assinatura_duplicada()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM assinatura
+        WHERE usuario_id = NEW.usuario_id
+          AND versao_id = NEW.versao_id
+    ) THEN
+        RAISE EXCEPTION 'Usuário já possui assinatura para esta versão.';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_impedir_assinatura_duplicada
+BEFORE INSERT ON assinatura
+FOR EACH ROW
+EXECUTE FUNCTION impedir_assinatura_duplicada();
+
+CREATE OR REPLACE FUNCTION atualizar_status_assinatura()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.data_termino IS NOT NULL AND NEW.data_termino < CURRENT_DATE THEN
+        NEW.status := 'expirada';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_atualizar_status_assinatura
+BEFORE INSERT OR UPDATE ON assinatura
+FOR EACH ROW
+EXECUTE FUNCTION atualizar_status_assinatura();

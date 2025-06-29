@@ -1,7 +1,10 @@
 -- Funções
 
 -- Inserção automatizada
-CREATE OR REPLACE FUNCTION cadastrar_categoria(i_nome VARCHAR, i_descricao VARCHAR DEFAULT NULL) RETURNS INT AS $$
+CREATE OR REPLACE FUNCTION cadastrar_categoria(
+    i_nome VARCHAR,
+    i_descricao VARCHAR DEFAULT NULL
+) RETURNS INT AS $$
     DECLARE
         i_id INT;
     BEGIN
@@ -17,6 +20,78 @@ CREATE OR REPLACE FUNCTION cadastrar_categoria(i_nome VARCHAR, i_descricao VARCH
         RETURNING id_categoria INTO i_id;
 
         RETURN i_id;
+    END;
+$$ LANGUAGE plpgsql;
+
+-- Atualização automatizada
+CREATE OR REPLACE FUNCTION atualizar_categoria(
+    u_id          INT,
+    u_nome        VARCHAR,
+    u_descricao   VARCHAR DEFAULT NULL
+) RETURNS INT AS $$
+    DECLARE
+        u_old RECORD;
+    BEGIN
+        SELECT *
+        INTO u_old
+        FROM "categoria"
+        WHERE "id_categoria" = u_id;
+    IF NOT FOUND THEN
+        RAISE NOTICE 'Nenhuma categoria encontrada com ID %.', u_id;
+        RETURN NULL;
+    END IF;
+
+    IF u_nome IS NOT NULL AND EXISTS (
+        SELECT 1
+        FROM "categoria"
+        WHERE LOWER("nome_categoria") = LOWER(u_nome)
+        AND "id_categoria" <> u_id
+    ) THEN
+        RAISE NOTICE 'Já existe outra categoria com nome "%".', u_nome;
+        RETURN NULL;
+    END IF;
+
+    UPDATE "categoria"
+    SET "nome_categoria" = COALESCE(u_nome, v_old.nome_categoria), "descricao_categoria" = COALESCE(u_descricao, u_old.descricao_categoria)
+    WHERE "id_categoria" = u_id;
+
+    RETURN u_id;
+    END;
+$$ LANGUAGE plpgsql;
+
+-- Remoção automatizada
+CREATE OR REPLACE FUNCTION excluir_categoria(
+    d_id    INT,
+    d_nome  VARCHAR
+) RETURNS TEXT AS $$
+    DECLARE
+        d_old RECORD;
+    BEGIN
+        SELECT *
+        INTO d_old
+        FROM "categoria"
+        WHERE "id_categoria" = d_id;
+        IF NOT FOUND THEN
+            RETURN format('Nenhuma categoria encontrada com ID %s.', d_id);
+        END IF;
+
+        IF i_nome IS NULL
+        OR LOWER(v_old.nome_categoria) <> LOWER(i_nome) THEN
+            RETURN format( 'O nome informado ("%s") não confere com o cadastro ("%s").', d_nome, v_old.nome_categoria);
+        END IF;
+
+        IF EXISTS (
+            SELECT 1
+            FROM "produto"
+            WHERE "categoria_id" = i_id
+        ) THEN
+            RETURN format('Não foi possível excluir: existem produtos vinculados à categoria "%s".', v_old.nome_categoria);
+        END IF;
+
+        DELETE FROM "categoria"
+        WHERE "id_categoria" = i_id;
+
+        RETURN format('Categoria "%s" (ID %s) excluída com sucesso.', v_old.nome_categoria, i_id);
     END;
 $$ LANGUAGE plpgsql;
 

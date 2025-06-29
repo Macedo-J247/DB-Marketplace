@@ -1,7 +1,10 @@
 -- Funções
 
 -- Inserção automatizada
-CREATE OR REPLACE FUNCTION cadastrar_desenvolvedor(i_nome VARCHAR, i_email VARCHAR) RETURNS INT AS $$
+CREATE OR REPLACE FUNCTION cadastrar_desenvolvedor(
+    i_nome VARCHAR,
+    i_email VARCHAR
+) RETURNS INT AS $$
     DECLARE
         i_id INT;
     BEGIN
@@ -20,8 +23,89 @@ CREATE OR REPLACE FUNCTION cadastrar_desenvolvedor(i_nome VARCHAR, i_email VARCH
     END;
 $$ LANGUAGE plpgsql;
 
+-- Atualização automatizada
+CREATE OR REPLACE FUNCTION atualizar_desenvolvedor(
+    u_id INT,
+    u_nome VARCHAR,
+    u_email VARCHAR
+) RETURNS INT AS $$
+    DECLARE
+        u_exists INT;
+    BEGIN
+        SELECT 1 INTO u_exists
+        FROM "desenvolvedor"
+        WHERE "id_desenvolvedor" = u_id;
+
+        IF NOT FOUND THEN
+            RAISE NOTICE 'Desenvolvedor não encontrado no banco de dados pelo ID repassado.';
+            RETURN NULL;
+        END IF;
+
+        IF EXISTS (
+            SELECT 1 FROM "desenvolvedor"
+            WHERE LOWER("email_dev") = LOWER(u_email)
+            AND "id_desenvolvedor" <> u_id
+        ) THEN
+            RAISE NOTICE 'O email repassado já está em uso por outro desenvolvedor.';
+            RETURN NULL;
+        END IF;
+
+        UPDATE "desenvolvedor"
+        SET "nome_dev" = u_nome, email_dev = u_nome
+        WHERE "id_desenvolvedor" = u_id;
+
+        RETURN u_id;
+    END;
+$$ LANGUAGE plpgsql;
+
+-- Remoção automatizada
+CREATE OR REPLACE FUNCTION excluir_desenvolvedor(
+    d_id INT,
+    d_nome VARCHAR
+) RETURN TEXT AS $$
+    DECLARE
+        d_old desenvolvedor%ROWTYPE;
+    BEGIN
+        SELECT * 
+        INTO v_old
+        FROM "desenvolvedor"
+        WHERE "id_desenvolvedor" = i_id;
+        IF NOT FOUND THEN
+            RETURN format('Nenhum desenvolvedor com ID %s encontrado.', i_id);
+        END IF;
+
+        IF LOWER(v_old.nome_dev) <> LOWER(i_nome) THEN
+        RETURN format(
+            'Nome informado (%s) não confere com o cadastro (%s).',
+            i_nome, v_old.nome_dev
+        );
+        END IF;
+
+        IF EXISTS (
+            SELECT 1
+            FROM "produto"
+            WHERE "desenvolvedor_id" = i_id
+        ) THEN
+            RETURN format(
+                'Não foi possível excluir: existem produtos vinculados a %s.',
+                v_old.nome_dev
+        );
+        END IF;
+        
+        DELETE FROM "desenvolvedor"
+        WHERE "id_desenvolvedor" = d_id;
+
+        RETURN format(
+            'Desenvolvedor $s, ID $s, excluídos do banco.',
+            d_old.nome_dev, d_id;
+        );
+    END;
+$$ LANGUAGE plpgsql;
+
 -- Busca por Nome
-CREATE OR REPLACE FUNCTION buscar_desenvolvedor(b_nome VARCHAR) RETURNS TABLE (id INT, nome VARCHAR, email VARCHAR, dt DATE) AS $$
+CREATE OR REPLACE FUNCTION buscar_desenvolvedor(
+    b_nome VARCHAR
+) RETURNS TABLE (id INT, nome VARCHAR, email VARCHAR, dt DATE) AS $$
     BEGIN
         RETURN QUERY
         SELECT

@@ -1,7 +1,6 @@
 -- Funções
 
 -- Inserção automatizada
--- 1) INSERIR USUÁRIO
 CREATE OR REPLACE FUNCTION cadastrar_usuario(
     i_nome_usuario   VARCHAR,
     i_email          VARCHAR,
@@ -50,8 +49,6 @@ BEGIN
 END;
 $$;
 
-
--- 2) ATUALIZAR USUÁRIO
 CREATE OR REPLACE FUNCTION atualizar_usuario(
     u_id_usuario     INT,
     u_nome_usuario   VARCHAR DEFAULT NULL,
@@ -98,8 +95,6 @@ BEGIN
 END;
 $$;
 
-
--- 3) EXCLUIR USUÁRIO
 CREATE OR REPLACE FUNCTION excluir_usuario(
     d_id_usuario     INT,
     d_nome_usuario   VARCHAR
@@ -149,11 +144,58 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION listar_usuarios()
+RETURNS TABLE (
+    id INT,
+    nome VARCHAR,
+    email VARCHAR,
+    tipo TIPOS_USUARIOS,
+    data_registro DATE
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        id_usuario,
+        nome_usuario,
+        email,
+        tipo_usuario,
+        data_registro
+    FROM usuario;
+END;
+$$ LANGUAGE plpgsql;
 
--- Busca por nome
+CREATE OR REPLACE FUNCTION buscar_usuario_por_nome(p_nome TEXT)
+RETURNS TABLE (
+    id INT,
+    nome VARCHAR,
+    email VARCHAR,
+    tipo TIPOS_USUARIOS
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        id_usuario,
+        nome_usuario,
+        email,
+        tipo_usuario
+    FROM usuario
+    WHERE nome_usuario ILIKE '%' || p_nome || '%';
+END;
+$$ LANGUAGE plpgsql;
 
--- Busca por tipo
-
--- Busca por data de registro
+CREATE OR REPLACE FUNCTION contar_usuarios_por_tipo()
+RETURNS TABLE (
+    tipo TIPOS_USUARIOS,
+    quantidade INT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        tipo_usuario,
+        COUNT(*)
+    FROM usuario
+    GROUP BY tipo_usuario;
+END;
+$$ LANGUAGE plpgsql;
 
 -- Triggers

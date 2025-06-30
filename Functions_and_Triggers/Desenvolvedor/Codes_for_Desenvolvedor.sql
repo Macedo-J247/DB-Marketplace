@@ -1,6 +1,7 @@
 -- Funções
 
 -- Inserção automatizada
+-- Testada e validada
 CREATE OR REPLACE FUNCTION cadastrar_desenvolvedor(i_nome VARCHAR, i_email VARCHAR) RETURNS INT AS $$
     DECLARE
         i_id INT;
@@ -21,6 +22,7 @@ CREATE OR REPLACE FUNCTION cadastrar_desenvolvedor(i_nome VARCHAR, i_email VARCH
 $$ LANGUAGE plpgsql;
 
 -- Atualização automatizada
+-- Testada e validada
 CREATE OR REPLACE FUNCTION atualizar_desenvolvedor(u_id INT, u_nome VARCHAR, u_email VARCHAR) RETURNS INT AS $$
     DECLARE
         u_exists INT;
@@ -52,6 +54,7 @@ CREATE OR REPLACE FUNCTION atualizar_desenvolvedor(u_id INT, u_nome VARCHAR, u_e
 $$ LANGUAGE plpgsql;
 
 -- Remoção automatizada
+-- Testada e validada
 CREATE OR REPLACE FUNCTION excluir_desenvolvedor(d_id INT, d_nome VARCHAR) RETURNS TEXT AS $$
     DECLARE
         d_old desenvolvedor%ROWTYPE;
@@ -82,6 +85,7 @@ CREATE OR REPLACE FUNCTION excluir_desenvolvedor(d_id INT, d_nome VARCHAR) RETUR
 $$ LANGUAGE plpgsql;
 
 -- Busca por Nome
+-- Testada e validada
 CREATE OR REPLACE FUNCTION buscar_desenvolvedor(b_nome VARCHAR) RETURNS TABLE (id INT, nome VARCHAR, email VARCHAR, dt DATE) AS $$
     BEGIN
         RETURN QUERY
@@ -94,7 +98,5 @@ CREATE OR REPLACE FUNCTION buscar_desenvolvedor(b_nome VARCHAR) RETURNS TABLE (i
         WHERE nome_dev ILIKE '%' || b_nome || '%';
     END;
 $$ LANGUAGE plpgsql;
-
--- Busca por data de cadastro
 
 -- Triggers

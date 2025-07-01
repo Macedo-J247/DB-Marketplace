@@ -27,8 +27,7 @@ CREATE OR REPLACE FUNCTION atualizar_desenvolvedor(u_id INT, u_nome VARCHAR, u_e
     DECLARE
         u_exists INT;
     BEGIN
-        SELECT 1 INTO u_exists
-        FROM "desenvolvedor"
+        SELECT 1 INTO u_exists FROM "desenvolvedor"
         WHERE "id_desenvolvedor" = u_id;
 
         IF NOT FOUND THEN
@@ -89,12 +88,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION buscar_desenvolvedor(b_nome VARCHAR) RETURNS TABLE (id INT, nome VARCHAR, email VARCHAR, dt DATE) AS $$
     BEGIN
         RETURN QUERY
-        SELECT
-            id_desenvolvedor AS id,
-            nome_dev AS nome,
-            email_dev AS email,
-            data_cadastro AS dt
-        FROM "desenvolvedor"
+        SELECT id_desenvolvedor AS id, nome_dev AS nome, email_dev AS email, data_cadastro AS dt FROM "desenvolvedor"
         WHERE nome_dev ILIKE '%' || b_nome || '%';
     END;
 $$ LANGUAGE plpgsql;

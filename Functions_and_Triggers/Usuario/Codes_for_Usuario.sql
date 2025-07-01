@@ -98,11 +98,11 @@ CREATE OR REPLACE FUNCTION buscar_usuario_por_nome(p_nome TEXT) RETURNS TABLE (i
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION contar_usuarios_por_tipo() RETURNS TABLE (tipo TIPOS_USUARIOS, quantidade INT) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT tipo_usuario, COUNT(*) FROM usuario
-    GROUP BY tipo_usuario;
-END;
+    BEGIN
+        RETURN QUERY
+        SELECT tipo_usuario, COUNT(*) FROM usuario
+        GROUP BY tipo_usuario;
+    END;
 $$ LANGUAGE plpgsql;
 
 -- Triggers

@@ -5,16 +5,6 @@ CREATE OR REPLACE FUNCTION cadastrar_api(i_produto_id INT, i_endpoint_url VARCHA
     DECLARE
         v_id INT;
     BEGIN
-        -- 4.1) Validar campos
-        IF i_produto_id IS NULL THEN
-            RAISE NOTICE 'Campo "produto_id" é obrigatório.';
-            RETURN NULL;
-        END IF;
-        IF i_endpoint_url IS NULL OR trim(i_endpoint_url) = '' THEN
-            RAISE NOTICE 'Campo "endpoint_url" é obrigatório.';
-            RETURN NULL;
-        END IF;
-
         IF NOT EXISTS (
             SELECT 1 FROM "produto"
             WHERE "id_produto" = i_produto_id
@@ -40,7 +30,6 @@ CREATE OR REPLACE FUNCTION cadastrar_api(i_produto_id INT, i_endpoint_url VARCHA
             RETURN NULL;
         END IF;
 
-        -- 4.4) Insere e retorna
         INSERT INTO "api"("produto_id", "endpoint_url")
         VALUES (i_produto_id, i_endpoint_url)
         RETURNING "produto_id" INTO v_id;
@@ -61,10 +50,6 @@ CREATE OR REPLACE FUNCTION atualizar_api(u_produto_id INT, u_endpoint_url VARCHA
             RETURN NULL;
         END IF;
 
-        IF u_endpoint_url IS NULL OR trim(u_endpoint_url) = '' THEN
-            RAISE NOTICE 'Campo "endpoint_url" é obrigatório.';
-            RETURN NULL;
-        END IF;
         IF EXISTS (
             SELECT 1 FROM "api"
             WHERE LOWER("endpoint_url") = LOWER(u_endpoint_url)
@@ -105,79 +90,42 @@ CREATE OR REPLACE FUNCTION excluir_api(d_produto_id INT, d_endpoint_url VARCHAR)
 $$ LANGUAGE plpgsql;
 
 -- Listar API
-CREATE OR REPLACE FUNCTION listar_apis() RETURNS TABLE (
-    id INT,
-    nome VARCHAR,
-    descricao TEXT,
-    preco NUMERIC,
-    status STATUS_PRODUTOS,
-    url VARCHAR,
-    data_publicacao DATE
-) AS $$
+CREATE OR REPLACE FUNCTION listar_apis() RETURNS TABLE (id INT, nome VARCHAR, descricao TEXT, preco NUMERIC, status STATUS_PRODUTOS, url VARCHAR, data_publicacao DATE) AS $$
     BEGIN
         RETURN QUERY
-        SELECT
-            p.id_produto AS id,
-            p.nome_produto AS nome,
-            p.descricao,
-            p.preco,
-            p.status,
-            a.endpoint_url AS url,
-            p.data_publicacao
-        FROM produto p
+        SELECT p.id_produto AS id, p.nome_produto AS nome, p.descricao, p.preco, p.status, a.endpoint_url AS url, p.data_publicacao FROM produto p
         JOIN api a ON a.produto_id = p.id_produto;
     END;
 $$ LANGUAGE plpgsql;
 
 -- Busca por nome
-CREATE OR REPLACE FUNCTION buscar_apis_por_nome(p_nome TEXT)
-RETURNS TABLE (
-    id INT,
-    nome VARCHAR,
-    url VARCHAR,
-    status STATUS_PRODUTOS
-) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT
-        p.id_produto,
-        p.nome_produto,
-        a.endpoint_url,
-        p.status
-    FROM produto p
-    JOIN api a ON a.produto_id = p.id_produto
-    WHERE p.nome_produto ILIKE '%' || p_nome || '%';
-END;
+CREATE OR REPLACE FUNCTION buscar_apis_por_nome(p_nome TEXT) RETURNS TABLE (id INT, nome VARCHAR, url VARCHAR, status STATUS_PRODUTOS) AS $$
+    BEGIN
+        RETURN QUERY
+        SELECT p.id_produto, p.nome_produto, a.endpoint_url, p.status FROM produto p
+        JOIN api a ON a.produto_id = p.id_produto
+        WHERE p.nome_produto ILIKE '%' || p_nome || '%';
+    END;
 $$ LANGUAGE plpgsql;
 
 -- Listar ativas
-CREATE OR REPLACE FUNCTION listar_apis_ativas()
-RETURNS TABLE (
-    id INT,
-    nome VARCHAR,
-    url VARCHAR
-) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT
-        p.id_produto,
-        p.nome_produto,
-        a.endpoint_url
-    FROM produto p
-    JOIN api a ON a.produto_id = p.id_produto
-    WHERE p.status = 'ativo';
-END;
+CREATE OR REPLACE FUNCTION listar_apis_ativas() RETURNS TABLE (id INT, nome VARCHAR, url VARCHAR) AS $$
+    BEGIN
+        RETURN QUERY
+        SELECT p.id_produto, p.nome_produto, a.endpoint_url FROM produto p
+        JOIN api a ON a.produto_id = p.id_produto
+        WHERE p.status = 'ativo';
+    END;
 $$ LANGUAGE plpgsql;
 
 -- Triggers
 
 -- endpoint duplicado
-CREATE OR REPLACE FUNCTION normalizar_endpoint_url()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.endpoint_url := LOWER(TRIM(NEW.endpoint_url));
-    RETURN NEW;
-END;
+CREATE OR REPLACE FUNCTION normalizar_endpoint_url() RETURNS TRIGGER AS $$
+    BEGIN
+        NEW.endpoint_url := LOWER(TRIM(NEW.endpoint_url));
+        RETURN NEW;
+    END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trg_normalizar_endpoint_url
@@ -186,21 +134,19 @@ FOR EACH ROW
 EXECUTE FUNCTION normalizar_endpoint_url();
 
 -- Verificar tipo
-CREATE OR REPLACE FUNCTION verificar_tipo_produto_api()
-RETURNS TRIGGER AS $$
-DECLARE
-    tipo_prod TIPOS_PRODUTOS;
-BEGIN
-    SELECT tipo INTO tipo_prod
-    FROM produto
-    WHERE id_produto = NEW.produto_id;
+CREATE OR REPLACE FUNCTION verificar_tipo_produto_api() RETURNS TRIGGER AS $$
+    DECLARE
+        tipo_prod TIPOS_PRODUTOS;
+    BEGIN
+        SELECT tipo INTO tipo_prod FROM produto
+        WHERE id_produto = NEW.produto_id;
 
-    IF tipo_prod IS DISTINCT FROM 'api' THEN
-        RAISE EXCEPTION 'O produto associado não é do tipo API.';
-    END IF;
+        IF tipo_prod IS DISTINCT FROM 'api' THEN
+            RAISE EXCEPTION 'O produto associado não é do tipo API.';
+        END IF;
 
-    RETURN NEW;
-END;
+        RETURN NEW;
+    END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trg_verificar_tipo_api

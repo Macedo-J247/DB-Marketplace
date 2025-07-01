@@ -100,82 +100,46 @@ CREATE OR REPLACE FUNCTION excluir_avaliacao(d_id_avaliacao INT, d_usuario_id IN
     END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION listar_avaliacoes()
-RETURNS TABLE (
-    id INT,
-    usuario VARCHAR,
-    produto VARCHAR,
-    versao VARCHAR,
-    nota DECIMAL(3,2),
-    data DATE
-) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT
-        a.id_avaliacao,
-        u.nome_usuario,
-        p.nome_produto,
-        v.num_versao,
-        a.nota,
-        a.data_avaliacao
-    FROM avaliacao a
-    JOIN usuario u ON u.id_usuario = a.usuario_id
-    JOIN versao v ON v.id_versao = a.versao_id
-    JOIN produto p ON p.id_produto = v.produto_id;
-END;
+CREATE OR REPLACE FUNCTION listar_avaliacoes() RETURNS TABLE (id INT, usuario VARCHAR, produto VARCHAR, versao VARCHAR, nota DECIMAL(3,2), data DATE) AS $$
+    BEGIN
+        RETURN QUERY
+        SELECT a.id_avaliacao, u.nome_usuario, p.nome_produto, v.num_versao, a.nota, a.data_avaliacao FROM avaliacao a
+        JOIN usuario u ON u.id_usuario = a.usuario_id
+        JOIN versao v ON v.id_versao = a.versao_id
+        JOIN produto p ON p.id_produto = v.produto_id;
+    END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION buscar_avaliacoes_por_produto(p_nome TEXT)
-RETURNS TABLE (
-    usuario VARCHAR,
-    versao VARCHAR,
-    nota DECIMAL(3,2),
-    data DATE
-) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT
-        u.nome_usuario,
-        v.num_versao,
-        a.nota,
-        a.data_avaliacao
-    FROM avaliacao a
-    JOIN usuario u ON u.id_usuario = a.usuario_id
-    JOIN versao v ON v.id_versao = a.versao_id
-    JOIN produto p ON p.id_produto = v.produto_id
-    WHERE p.nome_produto ILIKE '%' || p_nome || '%';
-END;
+CREATE OR REPLACE FUNCTION buscar_avaliacoes_por_produto(p_nome TEXT) RETURNS TABLE (usuario VARCHAR, versao VARCHAR, nota DECIMAL(3,2), data DATE) AS $$
+    BEGIN
+        RETURN QUERY
+        SELECT u.nome_usuario, v.num_versao, a.nota, a.data_avaliacao FROM avaliacao a
+        JOIN usuario u ON u.id_usuario = a.usuario_id
+        JOIN versao v ON v.id_versao = a.versao_id
+        JOIN produto p ON p.id_produto = v.produto_id
+        WHERE p.nome_produto ILIKE '%' || p_nome || '%';
+    END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION media_avaliacao_por_versao(p_versao_id INT)
-RETURNS DECIMAL(4,2) AS $$
-DECLARE
-    media DECIMAL(4,2);
-BEGIN
-    SELECT ROUND(AVG(nota), 2)
-    INTO media
-    FROM avaliacao
-    WHERE versao_id = p_versao_id;
+CREATE OR REPLACE FUNCTION media_avaliacao_por_versao(p_versao_id INT) RETURNS DECIMAL(4,2) AS $$
+    DECLARE
+        media DECIMAL(4,2);
+    BEGIN
+        SELECT ROUND(AVG(nota), 2) INTO media FROM avaliacao
+        WHERE versao_id = p_versao_id;
 
-    RETURN COALESCE(media, 0);
-END;
+        RETURN COALESCE(media, 0);
+    END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION contar_avaliacoes_por_produto()
-RETURNS TABLE (
-    produto VARCHAR,
-    total_avaliacoes INT
-) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT
-        p.nome_produto,
-        COUNT(*) AS total_avaliacoes
-    FROM avaliacao a
-    JOIN versao v ON v.id_versao = a.versao_id
-    JOIN produto p ON p.id_produto = v.produto_id
-    GROUP BY p.nome_produto;
-END;
+CREATE OR REPLACE FUNCTION contar_avaliacoes_por_produto() RETURNS TABLE (produto VARCHAR, total_avaliacoes INT) AS $$
+    BEGIN
+        RETURN QUERY
+        SELECT p.nome_produto, COUNT(*) AS total_avaliacoes FROM avaliacao a
+        JOIN versao v ON v.id_versao = a.versao_id
+        JOIN produto p ON p.id_produto = v.produto_id
+        GROUP BY p.nome_produto;
+    END;
 $$ LANGUAGE plpgsql;
 
 -- Triggers

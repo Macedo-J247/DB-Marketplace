@@ -51,29 +51,22 @@ CREATE OR REPLACE FUNCTION atualizar_categoria(u_id INT, u_nome VARCHAR, u_descr
 $$ LANGUAGE plpgsql;
 
 -- Remoção automatizada
-CREATE OR REPLACE FUNCTION excluir_categoria(
-    d_id    INT,
-    d_nome  VARCHAR
-) RETURNS TEXT AS $$
+CREATE OR REPLACE FUNCTION excluir_categoria(_id INT, d_nome VARCHAR) RETURNS TEXT AS $$
     DECLARE
         d_old RECORD;
     BEGIN
-        SELECT *
-        INTO d_old
-        FROM "categoria"
+        SELECT * INTO d_old FROM "categoria"
         WHERE "id_categoria" = d_id;
         IF NOT FOUND THEN
             RETURN format('Nenhuma categoria encontrada com ID %s.', d_id);
         END IF;
 
-        IF i_nome IS NULL
-        OR LOWER(v_old.nome_categoria) <> LOWER(i_nome) THEN
+        IF i_nome IS NULL OR LOWER(v_old.nome_categoria) <> LOWER(i_nome) THEN
             RETURN format( 'O nome informado ("%s") não confere com o cadastro ("%s").', d_nome, v_old.nome_categoria);
         END IF;
 
         IF EXISTS (
-            SELECT 1
-            FROM "produto"
+            SELECT 1 FROM "produto"
             WHERE "categoria_id" = i_id
         ) THEN
             RETURN format('Não foi possível excluir: existem produtos vinculados à categoria "%s".', v_old.nome_categoria);
@@ -90,11 +83,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION buscar_categoria(b_nome VARCHAR) RETURNS TABLE (id INT, nome VARCHAR, descricao VARCHAR) AS $$
     BEGIN
         RETURN QUERY
-        SELECT
-            id_categoria AS id,
-            nome_categoria AS nome,
-            descricao_categoria AS descricao
-        FROM "categoria"
+        SELECT id_categoria AS id, nome_categoria AS nome, descricao_categoria AS descricao FROM "categoria"
         WHERE nome_categoria ILIKE '%' || b_nome || '%';
     END;
 $$ LANGUAGE plpgsql;
@@ -103,8 +92,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION listar_categorias() RETURNS TABLE (id INT, nome VARCHAR, descricao VARCHAR) AS $$
     BEGIN
         RETURN QUERY
-        SELECT id_categoria, nome_categoria, descricao_categoria
-        FROM categoria;
+        SELECT id_categoria, nome_categoria, descricao_categoria FROM categoria;
     END;
 $$ LANGUAGE plpgsql;
 
@@ -112,8 +100,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION contar_produtos_por_categoria() RETURNS TABLE (categoria_id INT, nome_categoria VARCHAR, total_produtos INT) AS $$
     BEGIN
         RETURN QUERY
-        SELECT c.id_categoria, c.nome_categoria, COUNT(p.id_produto) AS total_produtos
-        FROM categoria c
+        SELECT c.id_categoria, c.nome_categoria, COUNT(p.id_produto) AS total_produtos FROM categoria c
         LEFT JOIN produto p ON p.categoria_id = c.id_categoria
         GROUP BY c.id_categoria, c.nome_categoria;
     END;

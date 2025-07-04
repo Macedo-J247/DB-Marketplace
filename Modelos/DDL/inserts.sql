@@ -40,6 +40,11 @@ SELECT inserir('produto', '3', '5', 'AuthX', 'API de autenticação segura com O
 SELECT inserir('produto', '4', '6', 'SendQuick', 'API de envio de SMS e emails', '149.50', 'api', 'ativo', '2024-04-15');
 SELECT inserir('produto', '1', '4', 'DesignFlow', 'Editor gráfico intuitivo para design gráfico', '79.00', 'software', 'revisao', '2024-05-10');
 
+-- Softwares (ligados aos produtos 1, 2 e 5)
+SELECT inserir('software', '1', 'licença perpétua');
+SELECT inserir('software', '2', 'mensal');
+SELECT inserir('software', '5', 'anual');
+
 -- APIs (ligadas aos produtos 3 e 4)
 SELECT inserir('api', '3', 'https://api.authx.com/v1');
 SELECT inserir('api', '4', 'https://api.sendquick.io/v1');
@@ -57,13 +62,11 @@ SELECT inserir('avaliacao', '2', '2', '5.0', '2024-03-05');
 SELECT inserir('avaliacao', '1', '3', '4.0', '2024-04-01');
 SELECT inserir('avaliacao', '5', '4', '4.2', '2024-05-01');
 
-
 -- Suportes
 SELECT inserir('suporte', '1', '1', '1', 'erro', 'Erro ao abrir imagem', 'aberto');
 SELECT inserir('suporte', '2', '3', '3', 'duvida', 'Como configurar OAuth?', 'em andamento');
 SELECT inserir('suporte', '1', '4', '4', 'melhoria', 'Sugestão de integração com WhatsApp', 'aberto');
 SELECT inserir('suporte', '5', '5', '5', 'erro', 'Erro ao exportar PNG', 'resolvido');
-
 
 -- Assinaturas
 SELECT inserir('assinatura', '1', '3', '1', '2024-04-01', NULL, 'ativa');

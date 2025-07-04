@@ -1,17 +1,81 @@
 -- Desenvolvedores
-SELECT cadastrar_desenvolvedor('Ana Silva', 'ana.silva@dev.com');
-SELECT cadastrar_desenvolvedor('Jose Santos', 'jose.santos@dev.com');
-SELECT cadastrar_desenvolvedor('Wadson Dias', 'wadson.dias@dev.com');
-SELECT cadastrar_desenvolvedor('Tiago Elias', 'tiago.elias@dev.com');
+SELECT inserir('desenvolvedor', 'Ana Silva', 'ana.silva@dev.com');
+SELECT inserir('desenvolvedor', 'Jose Santos', 'jose.santos@dev.com');
+SELECT inserir('desenvolvedor', 'Wadson Dias', 'wadson.dias@dev.com');
+SELECT inserir('desenvolvedor', 'Tiago Elias', 'tiago.elias@dev.com');
+SELECT inserir('desenvolvedor', 'Bruna Castro', 'bruna.castro@dev.com');
+SELECT inserir('desenvolvedor', 'Lucas Almeida', 'lucas.almeida@dev.com');
 
 -- Categorias
--- Preferencialmente softwares
-SELECT cadastrar_categoria('Desktop', 'Programas locais com interface gráfica');
-SELECT cadastrar_categoria('Web', 'Sistemas acessados via navegador com funcionalidades');
-SELECT cadastrar_categoria('Produtividade', 'Ferramenta para organização, escrita ou tarefas');
-SELECT cadastrar_categoria('Design', 'Criação e edição de conteúdo visual ou audiovisual');
--- Preferencialmente API's
-SELECT cadastrar_categoria('Autenticação', 'Ferramentas de login e controle de acesso entre sistemas');
-SELECT cadastrar_categoria('Mensageria', 'Programas de envio de mensagens por SMS, e-mail ou chat');
-SELECT cadastrar_categoria('Dados Públicos', 'Sistemas de acesso a informações abertas de instituições');
-SELECT cadastrar_categoria('Redes Sociais', 'Integração com plataformas sociais');
+SELECT inserir('categoria', 'Desktop', 'Programas locais com interface gráfica');
+SELECT inserir('categoria', 'Web', 'Sistemas acessados via navegador com funcionalidades');
+SELECT inserir('categoria', 'Produtividade', 'Ferramenta para organização, escrita ou tarefas');
+SELECT inserir('categoria', 'Design', 'Criação e edição de conteúdo visual ou audiovisual');
+SELECT inserir('categoria', 'Educação', 'Ferramentas para aprendizagem e ensino');
+SELECT inserir('categoria', 'Financeiro', 'Sistemas de gestão de finanças pessoais ou empresariais');
+SELECT inserir('categoria', 'Autenticação', 'Ferramentas de login e controle de acesso entre sistemas');
+SELECT inserir('categoria', 'Mensageria', 'Programas de envio de mensagens por SMS, e-mail ou chat');
+SELECT inserir('categoria', 'Dados Públicos', 'Sistemas de acesso a informações abertas de instituições');
+SELECT inserir('categoria', 'Redes Sociais', 'Integração com plataformas sociais');
+SELECT inserir('categoria', 'Pagamentos', 'Integração com sistemas financeiros e carteiras digitais');
+SELECT inserir('categoria', 'Geolocalização', 'Serviços de mapas, endereços e rastreamento');
+
+-- Usuários
+SELECT inserir('usuario', 'Carlos Lima', 'carlos.lima@cliente.com', '123senha', 'cliente');
+SELECT inserir('usuario', 'Mariana Dias', 'mariana.dias@cliente.com', '456senha', 'cliente');
+SELECT inserir('usuario', 'João Pedro', 'joao.pedro@admin.com', 'admin123', 'administrador');
+SELECT inserir('usuario', 'Lucas Dev', 'lucas.dev@dev.com', 'senha456', 'desenvolvedor');
+SELECT inserir('usuario', 'Paula Souza', 'paula.souza@cliente.com', 'senha789', 'cliente');
+SELECT inserir('usuario', 'Renato Braga', 'renato.braga@cliente.com', 'pass1234', 'cliente');
+
+-- Tipos de Pagamento
+SELECT inserir('tipo_pagamento', 'cartao');
+SELECT inserir('tipo_pagamento', 'boleto');
+SELECT inserir('tipo_pagamento', 'pix');
+
+-- Produtos
+SELECT inserir('produto', '1', '1', 'PhotoMaster', 'Editor de imagens profissional', '299.99', 'software', 'ativo', '2024-01-10');
+SELECT inserir('produto', '2', '2', 'NoteApp', 'Aplicativo de anotações rápido e prático', '19.99', 'software', 'ativo', '2024-02-05');
+SELECT inserir('produto', '3', '5', 'AuthX', 'API de autenticação segura com OAuth2', '99.00', 'api', 'ativo', '2024-03-01');
+SELECT inserir('produto', '4', '6', 'SendQuick', 'API de envio de SMS e emails', '149.50', 'api', 'ativo', '2024-04-15');
+SELECT inserir('produto', '1', '4', 'DesignFlow', 'Editor gráfico intuitivo para design gráfico', '79.00', 'software', 'revisao', '2024-05-10');
+
+-- APIs (ligadas aos produtos 3 e 4)
+SELECT inserir('api', '3', 'https://api.authx.com/v1');
+SELECT inserir('api', '4', 'https://api.sendquick.io/v1');
+
+-- Versões
+SELECT inserir('versao', '1', '1.0', '2024-01-15');
+SELECT inserir('versao', '1', '1.1', '2024-03-10');
+SELECT inserir('versao', '3', 'v1', '2024-03-05');
+SELECT inserir('versao', '4', 'v1.0', '2024-04-20');
+SELECT inserir('versao', '5', 'beta', '2024-05-15');
+
+-- Avaliações
+SELECT inserir('avaliacao', '1', '1', '4.5', '2024-03-01');
+SELECT inserir('avaliacao', '2', '2', '5.0', '2024-03-05');
+SELECT inserir('avaliacao', '1', '3', '4.0', '2024-04-01');
+SELECT inserir('avaliacao', '5', '4', '4.2', '2024-05-01');
+
+
+-- Suportes
+SELECT inserir('suporte', '1', '1', '1', 'erro', 'Erro ao abrir imagem', 'aberto');
+SELECT inserir('suporte', '2', '3', '3', 'duvida', 'Como configurar OAuth?', 'em andamento');
+SELECT inserir('suporte', '1', '4', '4', 'melhoria', 'Sugestão de integração com WhatsApp', 'aberto');
+SELECT inserir('suporte', '5', '5', '5', 'erro', 'Erro ao exportar PNG', 'resolvido');
+
+
+-- Assinaturas
+SELECT inserir('assinatura', '1', '3', '1', '2024-04-01', NULL, 'ativa');
+SELECT inserir('assinatura', '2', '4', '3', '2024-04-10', NULL, 'ativa');
+SELECT inserir('assinatura', '5', '1', '2', '2024-02-01', '2024-03-01', 'expirada');
+SELECT inserir('assinatura', '6', '5', '1', '2024-05-20', NULL, 'ativa');
+
+-- Parcelas
+SELECT inserir('parcela', '1', '99.00', '2024-04-10', '2024-04-10', 'pago');
+SELECT inserir('parcela', '1', '99.00', '2024-05-10', NULL, 'pendendte');
+SELECT inserir('parcela', '2', '149.50', '2024-04-20', '2024-04-20', 'pago');
+SELECT inserir('parcela', '2', '149.50', '2024-05-20', NULL, 'pendendte');
+SELECT inserir('parcela', '3', '19.99', '2024-02-15', '2024-02-15', 'pago');
+SELECT inserir('parcela', '3', '19.99', '2024-03-15', '2024-03-16', 'pago');
+SELECT inserir('parcela', '4', '79.00', '2024-06-20', NULL, 'pendendte');

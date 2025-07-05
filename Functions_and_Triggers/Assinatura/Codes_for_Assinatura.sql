@@ -121,6 +121,7 @@ CREATE OR REPLACE FUNCTION excluir_assinatura(d_id_assinatura INT, d_usuario_id 
     END;
 $$ LANGUAGE plpgsql;
 
+-- Testada e validada
 CREATE OR REPLACE FUNCTION listar_assinaturas() RETURNS TABLE (id INT, usuario VARCHAR, produto VARCHAR, versao VARCHAR, status STATUS_ASSINATURA, tipo_pagamento TIPOS_PAGAMENTOS, data_inicio DATE, data_termino DATE) AS $$
     BEGIN
         RETURN QUERY
@@ -132,6 +133,7 @@ CREATE OR REPLACE FUNCTION listar_assinaturas() RETURNS TABLE (id INT, usuario V
     END;
 $$ LANGUAGE plpgsql;
 
+-- Testada e validada
 CREATE OR REPLACE FUNCTION buscar_assinaturas_por_usuario(p_usuario_id INT)
 RETURNS TABLE (id INT, nome_produto VARCHAR, versao VARCHAR, status STATUS_ASSINATURA, data_inicio DATE, data_termino DATE) AS $$
     BEGIN
@@ -143,6 +145,7 @@ RETURNS TABLE (id INT, nome_produto VARCHAR, versao VARCHAR, status STATUS_ASSIN
     END;
 $$ LANGUAGE plpgsql;
 
+-- Testada e validada
 CREATE OR REPLACE FUNCTION listar_assinaturas_ativas() RETURNS TABLE (id INT, usuario VARCHAR, produto VARCHAR, versao VARCHAR, data_inicio DATE, data_termino DATE) AS $$
     BEGIN
         RETURN QUERY
@@ -154,11 +157,12 @@ CREATE OR REPLACE FUNCTION listar_assinaturas_ativas() RETURNS TABLE (id INT, us
     END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION contar_assinaturas_por_status() RETURNS TABLE (status STATUS_ASSINATURA, total INT) AS $$
+-- Testada e validada
+CREATE OR REPLACE FUNCTION contar_assinaturas_por_status() RETURNS TABLE (status public.STATUS_ASSINATURA, total bigint) AS $$
     BEGIN
         RETURN QUERY
-        SELECT status, COUNT(*) FROM assinatura
-        GROUP BY status;
+        SELECT a.status, COUNT(*) FROM assinatura a
+        GROUP BY a.status;
     END;
 $$ LANGUAGE plpgsql;
 

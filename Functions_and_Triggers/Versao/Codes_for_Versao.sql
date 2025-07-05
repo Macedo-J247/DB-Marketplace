@@ -155,6 +155,7 @@ CREATE OR REPLACE FUNCTION buscar_ultima_versao(p_produto_id INT) RETURNS TABLE 
 $$ LANGUAGE plpgsql;
 
 -- Função para contar o número de versões de cada produto
+-- Testada e validada
 CREATE FUNCTION contar_versao_por_produto(p_produto_id INT) RETURNS INT AS $$
     DECLARE
         version_count INT;

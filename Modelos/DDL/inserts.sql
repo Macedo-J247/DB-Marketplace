@@ -6,6 +6,8 @@ SELECT insercao_global('desenvolvedor', 'Wadson Dias', 'wadson.dias@dev.com');
 SELECT insercao_global('desenvolvedor', 'Tiago Elias', 'tiago.elias@dev.com');
 SELECT insercao_global('desenvolvedor', 'Bruna Castro', 'bruna.castro@dev.com');
 SELECT insercao_global('desenvolvedor', 'Lucas Almeida', 'lucas.almeida@dev.com');
+SELECT insercao_global('desenvolvedor', 'Helena Lopes', 'helena.lopes@dev.com');
+SELECT insercao_global('desenvolvedor', 'Rafael Souza', 'rafael.souza@dev.com');
 
 -- Categorias
 -- Testada e validada
@@ -30,6 +32,8 @@ SELECT insercao_global('usuario', 'João Pedro', 'joao.pedro@admin.com', 'admin1
 SELECT insercao_global('usuario', 'Lucas Dev', 'lucas.dev@dev.com', 'senha456', 'desenvolvedor');
 SELECT insercao_global('usuario', 'Paula Souza', 'paula.souza@cliente.com', 'senha789', 'cliente');
 SELECT insercao_global('usuario', 'Renato Braga', 'renato.braga@cliente.com', 'pass1234', 'cliente');
+SELECT insercao_global('usuario', 'Fernanda Torres', 'fernanda.torres@admin.com', 'admin456', 'administrador');
+SELECT insercao_global('usuario', 'Igor Lopes', 'igor.lopes@cliente.com', 'pass789', 'cliente');
 
 -- Tipos de Pagamento
 -- Testada e validada
@@ -44,17 +48,21 @@ SELECT insercao_global('produto', '2', '2', 'NoteApp', 'Aplicativo de anotaçõe
 SELECT insercao_global('produto', '3', '5', 'AuthX', 'API de autenticação segura com OAuth2', '99.00', 'api', 'ativo', '2024-03-01');
 SELECT insercao_global('produto', '4', '6', 'SendQuick', 'API de envio de SMS e emails', '149.50', 'api', 'ativo', '2024-04-15');
 SELECT insercao_global('produto', '1', '4', 'DesignFlow', 'Editor gráfico intuitivo para design gráfico', '79.00', 'software', 'revisao', '2024-05-10');
+SELECT insercao_global('produto', '5', '8', 'LearnSpace', 'Plataforma de ensino à distância', '199.90', 'software', 'ativo', '2024-05-20');
+SELECT insercao_global('produto', '6', '9', 'GeoTrack', 'API para rastreamento em tempo real', '89.99', 'api', 'ativo', '2024-06-10');
 
 -- Softwares (ligados aos produtos 1, 2 e 5)
 -- Testada e validada
 SELECT insercao_global('software', '1', 'licença perpétua');
 SELECT insercao_global('software', '2', 'mensal');
 SELECT insercao_global('software', '5', 'anual');
+SELECT insercao_global('software', '6', 'mensal');
 
 -- APIs (ligadas aos produtos 3 e 4)
 -- Testada e validada
 SELECT insercao_global('api', '3', 'https://api.authx.com/v1');
 SELECT insercao_global('api', '4', 'https://api.sendquick.io/v1');
+SELECT insercao_global('api', '7', 'https://api.geotrack.io');
 
 -- Versões
 -- Testada e validada
@@ -63,6 +71,7 @@ SELECT insercao_global('versao', '1', '1.1', '2024-03-10');
 SELECT insercao_global('versao', '3', 'v1', '2024-03-05');
 SELECT insercao_global('versao', '4', 'v1.0', '2024-04-20');
 SELECT insercao_global('versao', '5', 'beta', '2024-05-15');
+SELECT insercao_global('versao', '7', 'v2.0', '2024-06-20');
 
 -- Avaliações
 -- Testada e validada
@@ -70,6 +79,7 @@ SELECT insercao_global('avaliacao', '1', '1', '4.5', '2024-03-01');
 SELECT insercao_global('avaliacao', '2', '2', '5.0', '2024-03-05');
 SELECT insercao_global('avaliacao', '1', '3', '4.0', '2024-04-01');
 SELECT insercao_global('avaliacao', '5', '4', '4.2', '2024-05-01');
+SELECT insercao_global('avaliacao', '6', '6', '4.8', '2024-06-01');
 
 -- Suportes
 -- Testada e validada
@@ -77,6 +87,7 @@ SELECT insercao_global('suporte', '1', '1', '1', 'erro', 'Erro ao abrir imagem',
 SELECT insercao_global('suporte', '2', '3', '3', 'duvida', 'Como configurar OAuth?', 'em andamento');
 SELECT insercao_global('suporte', '1', '4', '4', 'melhoria', 'Sugestão de integração com WhatsApp', 'aberto');
 SELECT insercao_global('suporte', '5', '5', '5', 'erro', 'Erro ao exportar PNG', 'resolvido');
+SELECT insercao_global('suporte', '6', '6', '6', 'duvida', 'Dúvida sobre plano de assinatura', 'aberto');
 
 -- Assinaturas
 -- Testada e validada
@@ -84,6 +95,7 @@ SELECT insercao_global('assinatura', '1', '3', '1', '2024-04-01', NULL, 'ativa')
 SELECT insercao_global('assinatura', '2', '4', '3', '2024-04-10', NULL, 'ativa');
 SELECT insercao_global('assinatura', '5', '1', '2', '2024-02-01', '2024-03-01', 'expirada');
 SELECT insercao_global('assinatura', '6', '5', '1', '2024-05-20', NULL, 'ativa');
+SELECT insercao_global('assinatura', '7', '6', '3', '2024-06-10', NULL, 'ativa');
 
 -- Parcelas
 -- Testada e validada
@@ -94,3 +106,5 @@ SELECT insercao_global('parcela', '2', '149.50', '2024-05-20', NULL, 'pendendte'
 SELECT insercao_global('parcela', '3', '19.99', '2024-02-15', '2024-02-15', 'pago');
 SELECT insercao_global('parcela', '3', '19.99', '2024-03-15', '2024-03-16', 'pago');
 SELECT insercao_global('parcela', '4', '79.00', '2024-06-20', NULL, 'pendendte');
+SELECT insercao_global('parcela', '5', '199.90', '2024-05-25', NULL, 'pendendte');
+SELECT insercao_global('parcela', '6', '89.99', '2024-06-15', NULL, 'pendendte');

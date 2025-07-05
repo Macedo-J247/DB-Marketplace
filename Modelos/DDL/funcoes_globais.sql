@@ -45,29 +45,56 @@ CREATE OR REPLACE FUNCTION atualizacao_global(tab TEXT, VARIADIC campos TEXT[]) 
     BEGIN
         CASE LOWER(tab)
             WHEN 'desenvolvedor' THEN
-                EXECUTE format('SELECT atualizar_desenvolvedor(%L::INT, %L, %L)', campos[1], campos[2], campos[3]) INTO resultado;
+                EXECUTE format('SELECT atualizar_desenvolvedor(%s::INT, %L, %L)', campos[1], campos[2], campos[3]) INTO resultado;
+
             WHEN 'categoria' THEN
-                EXECUTE format('SELECT atualizar_categoria(%L::INT, %L, %L)', campos[1], campos[2], campos[3]) INTO resultado;
+                EXECUTE format('SELECT atualizar_categoria(%s::INT, %L, %L)', campos[1], campos[2], campos[3]) INTO resultado;
+
             WHEN 'usuario' THEN
-                EXECUTE format('SELECT atualizar_usuario(%L::INT, %L, %L, %L)', campos[1], campos[2], campos[3], campos[4]) INTO resultado;
+                EXECUTE format('SELECT atualizar_usuario(%s::INT, %L, %L, %L)', campos[1], campos[2], campos[3], campos[4]) INTO resultado;
+
             WHEN 'produto' THEN
-                EXECUTE format('SELECT atualizar_produto(%L::INT, %L::INT, %L, %L, %L::DECIMAL, %L::TIPOS_PRODUTOS, %L::STATUS_PRODUTOS, %L::DATE, %L::DATE)', campos[1], campos[2], campos[3], campos[4], campos[5], campos[6], campos[7], campos[8], campos[9]) INTO resultado;
+                EXECUTE format(
+                    'SELECT atualizar_produto(%s::INT, %s::INT, %L, %L, NULLIF(%s, ''NULL'')::DECIMAL, %s::TIPOS_PRODUTOS, %s::STATUS_PRODUTOS, %s::DATE, NULLIF(%s, ''NULL'')::DATE)',
+                    campos[1], campos[2], campos[3], campos[4], campos[5], campos[6], campos[7], campos[8], campos[9]
+                ) INTO resultado;
+
             WHEN 'software' THEN
-                EXECUTE format('SELECT atualizar_software(%L::INT, %L)', campos[1], campos[2]) INTO resultado;
+                EXECUTE format('SELECT atualizar_software(%s::INT, %L)', campos[1], campos[2]) INTO resultado;
+
             WHEN 'api' THEN
-                EXECUTE format('SELECT atualizar_api(%L::INT, %L)', campos[1], campos[2]) INTO resultado;
+                EXECUTE format('SELECT atualizar_api(%s::INT, %L)', campos[1], campos[2]) INTO resultado;
+
             WHEN 'versao' THEN
-                EXECUTE format('SELECT atualizar_versao(%L::INT, %L, %L::DATE)', campos[1], campos[2], campos[3]) INTO resultado;
+                EXECUTE format('SELECT atualizar_versao(%s::INT, %L, %s::DATE)', campos[1], campos[2], campos[3]) INTO resultado;
+
             WHEN 'suporte' THEN
-                EXECUTE format('SELECT atualizar_suporte(%L::INT, %L::INT, %L::INT, %L::TIPOS_SUPORTES, %L, %L::STATUS_SUPORTE)', campos[1], campos[2], campos[3], campos[4], campos[5], campos[6]) INTO resultado;
+                EXECUTE format(
+                    'SELECT atualizar_suporte(%s::INT, %s::INT, %s::INT, %s::TIPOS_SUPORTES, %L, %s::STATUS_SUPORTE)',
+                    campos[1], campos[2], campos[3], campos[4], campos[5], campos[6]
+                ) INTO resultado;
+
             WHEN 'avaliacao' THEN
-                EXECUTE format('SELECT atualizar_avaliacao(%L::INT, %L::INT, %L::DECIMAL, %L::DATE)', campos[1], campos[2], campos[3], campos[4]) INTO resultado;
+                EXECUTE format(
+                    'SELECT atualizar_avaliacao(%s::INT, %s::INT, %s::DECIMAL, %s::DATE)',
+                    campos[1], campos[2], campos[3], campos[4]
+                ) INTO resultado;
+
             WHEN 'tipo_pagamento' THEN
-                EXECUTE format('SELECT atualizar_tipo_pagamento(%L::INT, %L::TIPOS_PAGAMENTOS)', campos[1], campos[2]) INTO resultado;
+                EXECUTE format('SELECT atualizar_tipo_pagamento(%s::INT, %s::TIPOS_PAGAMENTOS)', campos[1], campos[2]) INTO resultado;
+
             WHEN 'assinatura' THEN
-                EXECUTE format('SELECT atualizar_assinatura(%L::INT, %L::INT, %L::INT, %L::INT, %L::DATE, %L::DATE, %L::STATUS_ASSINATURA)', campos[1], campos[2], campos[3], campos[4], campos[5], campos[6]) INTO resultado;
+                EXECUTE format(
+                    'SELECT atualizar_assinatura(%s::INT, %s::INT, %s::INT, %s::INT, %s::DATE, NULLIF(%s, ''NULL'')::DATE, %s::STATUS_ASSINATURA)',
+                    campos[1], campos[2], campos[3], campos[4], campos[5], campos[6], campos[7]
+                ) INTO resultado;
+
             WHEN 'parcela' THEN
-                EXECUTE format('SELECT atualizar_parcela(%L::INT, %L::INT, %L::DECIMAL, %L::DATE, %L::STATUS_PARCELA)', campos[1], campos[2], campos[3], campos[4], campos[5]) INTO resultado;
+                EXECUTE format(
+                    'SELECT atualizar_parcela(%s::INT, %s::INT, %s::DECIMAL, %s::DATE, %s::STATUS_PARCELA)',
+                    campos[1], campos[2], campos[3], campos[4], campos[5]
+                ) INTO resultado;
+
             ELSE
                 RAISE EXCEPTION 'Tabela % não suportada para atualização.', tab;
         END CASE;

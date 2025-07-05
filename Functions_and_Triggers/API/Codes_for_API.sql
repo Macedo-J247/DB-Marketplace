@@ -123,6 +123,7 @@ CREATE OR REPLACE FUNCTION listar_apis_ativas() RETURNS TABLE (id INT, nome VARC
 $$ LANGUAGE plpgsql;
 
 -- listar por preço
+-- Testada e validada
 CREATE FUNCTION listar_apis_por_preco() RETURNS TABLE(id integer, nome character varying, preco numeric, url character varying) AS $$
     BEGIN
         RETURN QUERY

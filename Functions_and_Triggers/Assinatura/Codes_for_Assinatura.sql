@@ -167,6 +167,7 @@ CREATE OR REPLACE FUNCTION contar_assinaturas_por_status() RETURNS TABLE (status
 $$ LANGUAGE plpgsql;
 
 -- listar por preço
+-- Testada e validada
 CREATE FUNCTION listar_assinaturas_por_preco() RETURNS TABLE (id_assinatura INTEGER, nome_usuario VARCHAR, nome_produto VARCHAR, num_versao VARCHAR, preco NUMERIC, status public.status_assinatura) AS $$
     BEGIN
         RETURN QUERY

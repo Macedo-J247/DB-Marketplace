@@ -123,6 +123,7 @@ CREATE OR REPLACE FUNCTION excluir_assinatura(d_id_assinatura INT, d_usuario_id 
     END;
 $$ LANGUAGE plpgsql;
 
+-- Listar assinaturas cadastradas
 -- Testada e validada
 CREATE OR REPLACE FUNCTION listar_assinaturas() RETURNS TABLE (id INT, usuario VARCHAR, produto VARCHAR, versao VARCHAR, status STATUS_ASSINATURA, tipo_pagamento TIPOS_PAGAMENTOS, data_inicio DATE, data_termino DATE) AS $$
     BEGIN
@@ -135,6 +136,7 @@ CREATE OR REPLACE FUNCTION listar_assinaturas() RETURNS TABLE (id INT, usuario V
     END;
 $$ LANGUAGE plpgsql;
 
+-- Busca de assinaturas por nome de usuário
 -- Testada e validada
 CREATE OR REPLACE FUNCTION buscar_assinaturas_por_usuario(p_usuario_id INT)
 RETURNS TABLE (id INT, nome_produto VARCHAR, versao VARCHAR, status STATUS_ASSINATURA, data_inicio DATE, data_termino DATE) AS $$
@@ -147,6 +149,7 @@ RETURNS TABLE (id INT, nome_produto VARCHAR, versao VARCHAR, status STATUS_ASSIN
     END;
 $$ LANGUAGE plpgsql;
 
+-- Listar assinaturas que estejam ativas
 -- Testada e validada
 CREATE OR REPLACE FUNCTION listar_assinaturas_ativas() RETURNS TABLE (id INT, usuario VARCHAR, produto VARCHAR, versao VARCHAR, data_inicio DATE, data_termino DATE) AS $$
     BEGIN
@@ -159,6 +162,7 @@ CREATE OR REPLACE FUNCTION listar_assinaturas_ativas() RETURNS TABLE (id INT, us
     END;
 $$ LANGUAGE plpgsql;
 
+-- Contabilizar assinaturas por status
 -- Testada e validada
 CREATE OR REPLACE FUNCTION contar_assinaturas_por_status() RETURNS TABLE (status public.STATUS_ASSINATURA, total bigint) AS $$
     BEGIN
@@ -182,6 +186,8 @@ CREATE FUNCTION listar_assinaturas_por_preco() RETURNS TABLE (id_assinatura INTE
 $$ LANGUAGE plpgsql;
 
 -- Triggers
+
+-- Impedir que uma assinatura seja duplicada
 CREATE OR REPLACE FUNCTION impedir_assinatura_duplicada()
 RETURNS TRIGGER AS $$
     BEGIN

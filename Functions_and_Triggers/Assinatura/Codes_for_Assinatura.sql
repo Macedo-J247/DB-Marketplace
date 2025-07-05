@@ -208,7 +208,7 @@ FOR EACH ROW
 EXECUTE FUNCTION impedir_assinatura_duplicada();
 
 -- Atualizar a data caso uma assinatura expire
---
+-- Testada e validada
 CREATE OR REPLACE FUNCTION atualizar_status_assinatura()
 RETURNS TRIGGER AS $$
     BEGIN

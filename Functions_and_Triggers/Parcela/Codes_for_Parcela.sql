@@ -36,7 +36,8 @@ CREATE OR REPLACE FUNCTION cadastrar_parcela(i_assinatura_id INT, i_valor DECIMA
 $$ LANGUAGE plpgsql;
 
 -- Atualização automatizada
-CREATE OR REPLACE FUNCTION atualizar_parcela(u_id_parcela INT, u_assinatura_id INT DEFAULT NULL, u_valor DECIMAL(10,2) DEFAULT NULL, u_data_vencimento DATE DEFAULT NULL, u_data_pagamento DATE DEFAULT NULL, u_status STATUS_PARCELA DEFAULT NULL) RETURNS INT AS $$
+-- Testada e validada
+CREATE OR REPLACE FUNCTION atualizar_parcela(u_id_parcela INT, u_assinatura_id INT, u_valor DECIMAL(10,2), u_data_vencimento DATE, u_data_pagamento DATE, u_status STATUS_PARCELA) RETURNS INT AS $$
     DECLARE
         v_old RECORD;
     BEGIN

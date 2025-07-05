@@ -38,6 +38,7 @@ CREATE OR REPLACE FUNCTION insercao_global(tab TEXT, VARIADIC campos TEXT[]) RET
 $$ LANGUAGE plpgsql;
 
 -- Atualizações globais por nome de tabela
+-- Testada e atualizada
 CREATE OR REPLACE FUNCTION atualizacao_global(tab TEXT, VARIADIC campos TEXT[]) RETURNS INT AS $$
     DECLARE
         resultado INT;

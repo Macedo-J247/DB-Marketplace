@@ -40,6 +40,7 @@ CREATE OR REPLACE FUNCTION cadastrar_api(i_produto_id INT, i_endpoint_url VARCHA
 $$ LANGUAGE plpgsql;
 
 -- Atualização automatizada
+-- Testada e validada
 CREATE OR REPLACE FUNCTION atualizar_api(u_produto_id INT, u_endpoint_url VARCHAR) RETURNS INT AS $$
     DECLARE
         u_old RECORD;

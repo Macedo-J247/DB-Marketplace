@@ -32,6 +32,7 @@ CREATE OR REPLACE FUNCTION cadastrar_software(i_produto_id INT, i_tipo_licenca V
 $$ LANGUAGE plpgsql;
 
 -- Atualização automatizada
+-- Testada e validada
 CREATE OR REPLACE FUNCTION atualizar_software(u_produto_id INT, u_tipo_licenca VARCHAR) RETURNS INT AS $$
     DECLARE
         u_old RECORD;

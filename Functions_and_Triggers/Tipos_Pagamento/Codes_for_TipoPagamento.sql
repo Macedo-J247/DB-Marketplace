@@ -23,6 +23,7 @@ CREATE OR REPLACE FUNCTION cadastrar_tipo_pagamento(i_nome_tipo TIPOS_PAGAMENTOS
 $$ LANGUAGE plpgsql;
 
 -- Atualização automatizada
+-- Testada e atualizada
 CREATE OR REPLACE FUNCTION atualizar_tipo_pagamento(u_id_tipo_pagamento INT, u_nome_tipo TIPOS_PAGAMENTOS) RETURNS INT AS $$
     DECLARE
         v_old RECORD;

@@ -43,7 +43,8 @@ CREATE OR REPLACE FUNCTION cadastrar_avaliacao(i_usuario_id INT, i_versao_id INT
 $$ LANGUAGE plpgsql;
 
 -- Atualização automatizada
-CREATE OR REPLACE FUNCTION atualizar_avaliacao(u_id_avaliacao INT, u_nota DECIMAL(3,2) DEFAULT NULL, u_data_avaliacao DATE DEFAULT NULL) RETURNS INT AS $$
+-- Testada e validada
+CREATE OR REPLACE FUNCTION atualizar_avaliacao(u_id_avaliacao INT, u_nota DECIMAL(3,2), u_data_avaliacao DATE) RETURNS INT AS $$
     DECLARE
         v_old RECORD;
         v_new_nota DECIMAL(3,2);

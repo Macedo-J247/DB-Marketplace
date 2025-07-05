@@ -37,7 +37,8 @@ CREATE OR REPLACE FUNCTION cadastrar_suporte(i_usuario_id INT, i_produto_id INT,
 $$ LANGUAGE plpgsql;
 
 -- Atualização automatizada
-CREATE OR REPLACE FUNCTION atualizar_suporte(u_id_suporte INT, u_tipo TIPOS_SUPORTES DEFAULT NULL, u_descricao TEXT DEFAULT NULL, u_status STATUS_SUPORTE DEFAULT NULL) RETURNS INT AS $$
+-- Testada e atualizada
+CREATE OR REPLACE FUNCTION atualizar_suporte(u_id_suporte INT, u_tipo TIPOS_SUPORTES, u_descricao TEXT, u_status STATUS_SUPORTE) RETURNS INT AS $$
     DECLARE
         v_old RECORD;
     BEGIN

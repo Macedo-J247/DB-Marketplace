@@ -22,7 +22,8 @@ CREATE OR REPLACE FUNCTION cadastrar_categoria(i_nome VARCHAR, i_descricao VARCH
 $$ LANGUAGE plpgsql;
 
 -- Atualização automatizada
-CREATE OR REPLACE FUNCTION atualizar_categoria(u_id INT, u_nome VARCHAR, u_descricao VARCHAR DEFAULT NULL) RETURNS INT AS $$
+-- Testada e validada
+CREATE OR REPLACE FUNCTION atualizar_categoria(u_id INT, u_nome VARCHAR, u_descricao VARCHAR) RETURNS INT AS $$
     DECLARE
         u_old RECORD;
     BEGIN

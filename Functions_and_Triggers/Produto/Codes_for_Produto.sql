@@ -34,7 +34,8 @@ CREATE OR REPLACE FUNCTION cadastrar_produto(i_desenvolvedor_id INT, i_categoria
 $$ LANGUAGE plpgsql;
 
 --  Atualização automatizada
-CREATE OR REPLACE FUNCTION atualizar_produto(u_id_produto INT, u_desenvolvedor_id INT DEFAULT NULL, u_categoria_id INT DEFAULT NULL, u_nome_produto VARCHAR DEFAULT NULL, u_descricao TEXT DEFAULT NULL, u_preco DECIMAL(10,2)  DEFAULT NULL, u_tipo TIPOS_PRODUTOS DEFAULT NULL, u_status STATUS_PRODUTOS DEFAULT NULL, u_data_publicacao DATE DEFAULT NULL, u_data_atualizacao DATE DEFAULT NULL) RETURNS INT AS $$
+-- Testada e validada
+CREATE OR REPLACE FUNCTION atualizar_produto(u_id_produto INT, u_desenvolvedor_id INT, u_categoria_id INT, u_nome_produto VARCHAR, u_descricao TEXT, u_preco DECIMAL(10,2) , u_tipo TIPOS_PRODUTOS, u_status STATUS_PRODUTOS, u_data_publicacao DATE, u_data_atualizacao DATE) RETURNS INT AS $$
     DECLARE
         v_old RECORD;
     BEGIN

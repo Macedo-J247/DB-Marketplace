@@ -39,7 +39,8 @@ CREATE OR REPLACE FUNCTION cadastrar_versao(i_produto_id INT, i_num_versao VARCH
 $$ LANGUAGE plpgsql;
 
 -- Atualização automatizada
-CREATE OR REPLACE FUNCTION atualizar_versao(u_id_versao INT, u_produto_id INT DEFAULT NULL, u_num_versao VARCHAR DEFAULT NULL, u_data_lancamento DATE DEFAULT NULL) RETURNS INT AS $$
+-- Testada e atualizada
+CREATE OR REPLACE FUNCTION atualizar_versao(u_id_versao INT, u_produto_id INT, u_num_versao VARCHAR, u_data_lancamento DATE) RETURNS INT AS $$
     DECLARE
         v_old RECORD;
         v_max_date DATE;

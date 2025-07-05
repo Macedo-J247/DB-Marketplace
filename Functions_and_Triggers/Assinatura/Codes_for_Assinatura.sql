@@ -40,7 +40,8 @@ CREATE OR REPLACE FUNCTION cadastrar_assinatura(i_usuario_id INT, i_versao_id IN
 $$ LANGUAGE plpgsql;
 
 -- Atualização automatizada
-CREATE OR REPLACE FUNCTION atualizar_assinatura(u_id_assinatura INT, u_usuario_id INT DEFAULT NULL, u_versao_id INT DEFAULT NULL, u_tipo_pagamento_id  INT DEFAULT NULL, u_data_inicio DATE DEFAULT NULL, u_data_termino DATE DEFAULT NULL, u_status STATUS_ASSINATURA DEFAULT NULL) RETURNS INT AS $$
+-- Testada e validada
+CREATE OR REPLACE FUNCTION atualizar_assinatura(u_id_assinatura INT, u_usuario_id INT, u_versao_id INT, u_tipo_pagamento_id  INT, u_data_inicio DATE, u_data_termino DATE, u_status STATUS_ASSINATURA) RETURNS INT AS $$
     DECLARE
         d_old RECORD;
         v_new_inicio DATE;

@@ -23,9 +23,10 @@ CREATE OR REPLACE FUNCTION cadastrar_usuario(i_nome_usuario VARCHAR, i_email VAR
 $$ LANGUAGE plpgsql;
 
 -- Atualização automatizada
-CREATE OR REPLACE FUNCTION atualizar_usuario(u_id_usuario INT, u_nome_usuario VARCHAR DEFAULT NULL, u_email VARCHAR DEFAULT NULL, u_senha VARCHAR DEFAULT NULL, u_tipo_usuario TIPOS_USUARIOS DEFAULT NULL) RETURNS INT AS $$
-DECLARE
-    v_old RECORD;
+-- Testada e validada
+CREATE OR REPLACE FUNCTION atualizar_usuario(u_id_usuario INT, u_nome_usuario VARCHAR, u_email VARCHAR, u_senha VARCHAR, u_tipo_usuario TIPOS_USUARIOS) RETURNS INT AS $$
+    DECLARE
+        v_old RECORD;
     BEGIN
         SELECT * INTO v_old FROM "usuario"
         WHERE "id_usuario" = u_id_usuario;

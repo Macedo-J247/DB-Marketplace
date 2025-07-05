@@ -83,7 +83,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION listar_usuarios() RETURNS TABLE (id INT, nome VARCHAR, email VARCHAR, tipo TIPOS_USUARIOS, data_registro DATE) AS $$
+-- Testada e validada
+CREATE OR REPLACE FUNCTION listar_usuarios() RETURNS TABLE (id INT, nome VARCHAR, mail VARCHAR, tipo TIPOS_USUARIOS, dt_registro DATE) AS $$
     BEGIN
         RETURN QUERY
         SELECT id_usuario, nome_usuario, email, tipo_usuario, data_registro FROM usuario;

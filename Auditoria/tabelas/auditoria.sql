@@ -1,4 +1,5 @@
 -- Tabelas de Auditoria
+-- Testadas e validadas
 
 -- Auditoria para a tabela de assinatura
 CREATE TABLE auditoria_assinatura (

@@ -22,7 +22,7 @@ CREATE OR REPLACE FUNCTION insercao_global(tab TEXT, VARIADIC campos TEXT[]) RET
             WHEN 'suporte' THEN
                 EXECUTE format('SELECT cadastrar_suporte(%s, %s, %s, %L, %L, %L)', campos[1], campos[2], campos[3], campos[4], campos[5], campos[6]) INTO resultado;
             WHEN 'avaliacao' THEN
-                EXECUTE format('SELECT cadastrar_avaliacao(%s, %s, %s, %L)', campos[1], campos[2], campos[3], campos[4]) INTO resultado;
+                EXECUTE format('SELECT cadastrar_avaliacao(%s, %s, %s)', campos[1], campos[2], campos[3], campos[4]) INTO resultado;
             WHEN 'tipo_pagamento' THEN
                 EXECUTE format('SELECT cadastrar_tipo_pagamento(%L)', campos[1]) INTO resultado;
             WHEN 'assinatura' THEN

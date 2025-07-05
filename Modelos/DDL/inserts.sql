@@ -38,6 +38,7 @@ SELECT insercao_global('tipo_pagamento', 'boleto');
 SELECT insercao_global('tipo_pagamento', 'pix');
 
 -- Produtos
+-- Testada e validada
 SELECT insercao_global('produto', '1', '1', 'PhotoMaster', 'Editor de imagens profissional', '299.99', 'software', 'ativo', '2024-01-10');
 SELECT insercao_global('produto', '2', '2', 'NoteApp', 'Aplicativo de anotações rápido e prático', '19.99', 'software', 'ativo', '2024-02-05');
 SELECT insercao_global('produto', '3', '5', 'AuthX', 'API de autenticação segura com OAuth2', '99.00', 'api', 'ativo', '2024-03-01');
@@ -45,15 +46,18 @@ SELECT insercao_global('produto', '4', '6', 'SendQuick', 'API de envio de SMS e 
 SELECT insercao_global('produto', '1', '4', 'DesignFlow', 'Editor gráfico intuitivo para design gráfico', '79.00', 'software', 'revisao', '2024-05-10');
 
 -- Softwares (ligados aos produtos 1, 2 e 5)
+-- Testada e validada
 SELECT insercao_global('software', '1', 'licença perpétua');
 SELECT insercao_global('software', '2', 'mensal');
 SELECT insercao_global('software', '5', 'anual');
 
 -- APIs (ligadas aos produtos 3 e 4)
+-- Testada e validada
 SELECT insercao_global('api', '3', 'https://api.authx.com/v1');
 SELECT insercao_global('api', '4', 'https://api.sendquick.io/v1');
 
 -- Versões
+-- Testada e validada
 SELECT insercao_global('versao', '1', '1.0', '2024-01-15');
 SELECT insercao_global('versao', '1', '1.1', '2024-03-10');
 SELECT insercao_global('versao', '3', 'v1', '2024-03-05');
@@ -61,24 +65,28 @@ SELECT insercao_global('versao', '4', 'v1.0', '2024-04-20');
 SELECT insercao_global('versao', '5', 'beta', '2024-05-15');
 
 -- Avaliações
+-- Testada e validada
 SELECT insercao_global('avaliacao', '1', '1', '4.5', '2024-03-01');
 SELECT insercao_global('avaliacao', '2', '2', '5.0', '2024-03-05');
 SELECT insercao_global('avaliacao', '1', '3', '4.0', '2024-04-01');
 SELECT insercao_global('avaliacao', '5', '4', '4.2', '2024-05-01');
 
 -- Suportes
+-- Testada e validada
 SELECT insercao_global('suporte', '1', '1', '1', 'erro', 'Erro ao abrir imagem', 'aberto');
 SELECT insercao_global('suporte', '2', '3', '3', 'duvida', 'Como configurar OAuth?', 'em andamento');
 SELECT insercao_global('suporte', '1', '4', '4', 'melhoria', 'Sugestão de integração com WhatsApp', 'aberto');
 SELECT insercao_global('suporte', '5', '5', '5', 'erro', 'Erro ao exportar PNG', 'resolvido');
 
 -- Assinaturas
+-- Testada e validada
 SELECT insercao_global('assinatura', '1', '3', '1', '2024-04-01', NULL, 'ativa');
 SELECT insercao_global('assinatura', '2', '4', '3', '2024-04-10', NULL, 'ativa');
 SELECT insercao_global('assinatura', '5', '1', '2', '2024-02-01', '2024-03-01', 'expirada');
 SELECT insercao_global('assinatura', '6', '5', '1', '2024-05-20', NULL, 'ativa');
 
 -- Parcelas
+-- Testada e validada
 SELECT insercao_global('parcela', '1', '99.00', '2024-04-10', '2024-04-10', 'pago');
 SELECT insercao_global('parcela', '1', '99.00', '2024-05-10', NULL, 'pendendte');
 SELECT insercao_global('parcela', '2', '149.50', '2024-04-20', '2024-04-20', 'pago');

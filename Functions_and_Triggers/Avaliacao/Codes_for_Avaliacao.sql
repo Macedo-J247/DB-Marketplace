@@ -35,7 +35,7 @@ CREATE OR REPLACE FUNCTION cadastrar_avaliacao(i_usuario_id INT, i_versao_id INT
         END IF;
 
         INSERT INTO "avaliacao"("usuario_id", "versao_id", "nota", "data_avaliacao")
-        VALUES (i_usuario_id, i_versao_id, i_nota, CURRENTE_TIMESTAMP)
+        VALUES (i_usuario_id, i_versao_id, i_nota, CURRENT_TIMESTAMP)
         RETURNING "id_avaliacao" INTO i_id;
 
         RETURN i_id;

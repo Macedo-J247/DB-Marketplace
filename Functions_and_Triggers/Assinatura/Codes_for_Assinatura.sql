@@ -41,7 +41,7 @@ $$ LANGUAGE plpgsql;
 
 -- Atualização automatizada
 -- Testada e validada
-CREATE OR REPLACE FUNCTION atualizar_assinatura(u_id_assinatura INT, u_usuario_id INT, u_versao_id INT, u_tipo_pagamento_id  INT, u_data_inicio DATE, u_data_termino DATE, u_status STATUS_ASSINATURA) RETURNS INT AS $$
+CREATE OR REPLACE FUNCTION atualizar_assinatura(u_id_assinatura INT, u_usuario_id INT, u_versao_id INT, u_tipo_pagamento_id INT, u_data_inicio DATE, u_data_termino DATE, u_status STATUS_ASSINATURA) RETURNS INT AS $$
     DECLARE
         d_old RECORD;
         v_new_inicio DATE;
@@ -188,6 +188,7 @@ $$ LANGUAGE plpgsql;
 -- Triggers
 
 -- Impedir que uma assinatura seja duplicada
+-- Testada e validada
 CREATE OR REPLACE FUNCTION impedir_assinatura_duplicada()
 RETURNS TRIGGER AS $$
     BEGIN
@@ -206,6 +207,8 @@ BEFORE INSERT ON assinatura
 FOR EACH ROW
 EXECUTE FUNCTION impedir_assinatura_duplicada();
 
+-- Atualizar a data caso uma assinatura expire
+--
 CREATE OR REPLACE FUNCTION atualizar_status_assinatura()
 RETURNS TRIGGER AS $$
     BEGIN

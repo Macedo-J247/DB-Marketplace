@@ -91,12 +91,14 @@ CREATE OR REPLACE FUNCTION listar_tipos_pagamento() RETURNS TABLE (id INT, nome 
 $$ LANGUAGE plpgsql;
 
 -- Contabilizar o número de assinaturas pelo tipo de pagamento
-CREATE OR REPLACE FUNCTION contar_assinaturas_por_tipo_pagamento() RETURNS TABLE (tipo_pagamento TIPOS_PAGAMENTOS, total_assinaturas INT) AS $$
+-- Testada e validada
+CREATE FUNCTION contar_assinaturas_por_tipo_pagamento() RETURNS TABLE(tipo_pagamento public.tipos_pagamentos, total_assinaturas bigint) AS $$
     BEGIN
         RETURN QUERY
         SELECT tp.nome_tipo, COUNT(a.id_assinatura) FROM tipo_pagamento tp
-        LEFT JOIN assinatura a ON a.tipo_pagamento_id = tp.id_tipo_pagamento
-        GROUP BY tp.nome_tipo;
+        LEFT JOIN assinatura a ON tp.id_tipo_pagamento = a.tipo_pagamento_id
+        GROUP BY tp.nome_tipo
+        ORDER BY COUNT(a.id_assinatura) DESC;
     END;
 $$ LANGUAGE plpgsql;
 

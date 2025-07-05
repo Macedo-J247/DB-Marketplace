@@ -81,6 +81,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Listar os tipos de pagamentos cadastrados
+-- Testada e validada
 CREATE OR REPLACE FUNCTION listar_tipos_pagamento() RETURNS TABLE (id INT, nome TIPOS_PAGAMENTOS) AS $$
     BEGIN
         RETURN QUERY

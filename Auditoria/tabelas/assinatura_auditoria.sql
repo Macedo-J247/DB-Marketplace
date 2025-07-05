@@ -1,7 +1,7 @@
 CREATE TABLE auditoria_assinatura (
     id_auditoria SERIAL PRIMARY KEY,
     id_assinatura INT,
-    acao VARCHAR(10), -- 'INSERT', 'UPDATE', 'DELETE'
+    acao VARCHAR(10),
     usuario_id INT,
     versao_id INT,
     tipo_pagamento_id INT,

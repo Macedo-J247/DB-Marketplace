@@ -45,33 +45,33 @@ CREATE OR REPLACE FUNCTION atualizacao_global(tab TEXT, VARIADIC campos TEXT[]) 
     BEGIN
         CASE LOWER(tab)
             WHEN 'desenvolvedor' THEN
-                EXECUTE format('SELECT atualizar_desenvolvedor(%s, %L, %L)', campos[1], campos[2], campos[3]) INTO resultado;
+                EXECUTE format('SELECT atualizar_desenvolvedor(%L::INT, %L, %L)', campos[1], campos[2], campos[3]) INTO resultado;
             WHEN 'categoria' THEN
-                EXECUTE format('SELECT atualizar_categoria(%s, %L, %L)', campos[1], campos[2], campos[3]) INTO resultado;
+                EXECUTE format('SELECT atualizar_categoria(%L::INT, %L, %L)', campos[1], campos[2], campos[3]) INTO resultado;
             WHEN 'usuario' THEN
-                EXECUTE format('SELECT atualizar_usuario(%s, %L, %L, %L)', campos[1], campos[2], campos[3], campos[4]) INTO resultado;
+                EXECUTE format('SELECT atualizar_usuario(%L::INT, %L, %L, %L)', campos[1], campos[2], campos[3], campos[4]) INTO resultado;
             WHEN 'produto' THEN
-                EXECUTE format('SELECT atualizar_produto(%s, %s, %L, %L, %s, %L, %L, %L, %L)', campos[1], campos[2], campos[3], campos[4], campos[5], campos[6], campos[7], campos[8], campos[9]) INTO resultado;
+                EXECUTE format('SELECT atualizar_produto(%L::INT, %L::INT, %L, %L, %L::DECIMAL, %L::TIPOS_PRODUTOS, %L::STATUS_PRODUTOS, %L::DATE, %L::DATE)', campos[1], campos[2], campos[3], campos[4], campos[5], campos[6], campos[7], campos[8], campos[9]) INTO resultado;
             WHEN 'software' THEN
-                EXECUTE format('SELECT atualizar_software(%s, %L)', campos[1], campos[2]) INTO resultado;
+                EXECUTE format('SELECT atualizar_software(%L::INT, %L)', campos[1], campos[2]) INTO resultado;
             WHEN 'api' THEN
-                EXECUTE format('SELECT atualizar_api(%s, %L)', campos[1], campos[2]) INTO resultado;
+                EXECUTE format('SELECT atualizar_api(%L::INT, %L)', campos[1], campos[2]) INTO resultado;
             WHEN 'versao' THEN
-                EXECUTE format('SELECT atualizar_versao(%s, %L, %L)', campos[1], campos[2], campos[3]) INTO resultado;
+                EXECUTE format('SELECT atualizar_versao(%L::INT, %L, %L::DATE)', campos[1], campos[2], campos[3]) INTO resultado;
             WHEN 'suporte' THEN
-                EXECUTE format('SELECT atualizar_suporte(%s, %s, %s, %L, %L, %L)', campos[1], campos[2], campos[3], campos[4], campos[5], campos[6]) INTO resultado;
+                EXECUTE format('SELECT atualizar_suporte(%L::INT, %L::INT, %L::INT, %L::TIPOS_SUPORTES, %L, %L::STATUS_SUPORTE)', campos[1], campos[2], campos[3], campos[4], campos[5], campos[6]) INTO resultado;
             WHEN 'avaliacao' THEN
-                EXECUTE format('SELECT atualizar_avaliacao(%s, %s, %s, %L)', campos[1], campos[2], campos[3], campos[4]) INTO resultado;
+                EXECUTE format('SELECT atualizar_avaliacao(%L::INT, %L::INT, %L::DECIMAL, %L::DATE)', campos[1], campos[2], campos[3], campos[4]) INTO resultado;
             WHEN 'tipo_pagamento' THEN
-                EXECUTE format('SELECT atualizar_tipo_pagamento(%s, %L)', campos[1], campos[2]) INTO resultado;
+                EXECUTE format('SELECT atualizar_tipo_pagamento(%L::INT, %L::TIPOS_PAGAMENTOS)', campos[1], campos[2]) INTO resultado;
             WHEN 'assinatura' THEN
-                EXECUTE format('SELECT atualizar_assinatura(%s, %s, %s, %L, %L, %L)', campos[1], campos[2], campos[3], campos[4], campos[5], campos[6]) INTO resultado;
+                EXECUTE format('SELECT atualizar_assinatura(%L::INT, %L::INT, %L::INT, %L::INT, %L::DATE, %L::DATE, %L::STATUS_ASSINATURA)', campos[1], campos[2], campos[3], campos[4], campos[5], campos[6]) INTO resultado;
             WHEN 'parcela' THEN
-                EXECUTE format('SELECT atualizar_parcela(%s, %s, %L, %L, %L)', campos[1], campos[2], campos[3], campos[4], campos[5]) INTO resultado;
+                EXECUTE format('SELECT atualizar_parcela(%L::INT, %L::INT, %L::DECIMAL, %L::DATE, %L::STATUS_PARCELA)', campos[1], campos[2], campos[3], campos[4], campos[5]) INTO resultado;
             ELSE
                 RAISE EXCEPTION 'Tabela % não suportada para atualização.', tab;
         END CASE;
-        
+
         RETURN resultado;
     END;
 $$ LANGUAGE plpgsql;

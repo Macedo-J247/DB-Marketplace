@@ -134,3 +134,33 @@ CREATE OR REPLACE FUNCTION contar_suportes_por_status() RETURNS TABLE (status pu
 $$ LANGUAGE plpgsql;
 
 -- Triggers
+--impedir exclusão de suporte em andamento
+CREATE OR REPLACE FUNCTION impedir_exclusao_suporte()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF OLD.status IN ('em andamento', 'resolvido') THEN
+        RAISE EXCEPTION 'Não é permitido excluir suportes com status %.', OLD.status;
+    END IF;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_impedir_exclusao_suporte
+BEFORE DELETE ON suporte
+FOR EACH ROW
+EXECUTE FUNCTION impedir_exclusao_suporte();
+
+-- Adiciona data atual ao criar um suporte
+CREATE OR REPLACE FUNCTION set_data_suporte()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.data_suporte := CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger
+CREATE TRIGGER trg_set_data_suporte
+BEFORE INSERT ON suporte
+FOR EACH ROW
+EXECUTE FUNCTION set_data_suporte();

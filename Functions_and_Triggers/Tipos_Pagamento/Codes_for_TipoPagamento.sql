@@ -105,3 +105,20 @@ CREATE FUNCTION contar_assinaturas_por_tipo_pagamento() RETURNS TABLE(tipo_pagam
 $$ LANGUAGE plpgsql;
 
 -- Triggers
+-- validar nome de tipo de pagamento
+CREATE OR REPLACE FUNCTION trigger_validar_nome_tipo_pagamento()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TRIM(NEW.nome_tipo) IS NULL OR TRIM(NEW.nome_tipo) = '' THEN
+        RAISE EXCEPTION 'O nome do tipo de pagamento não pode ser nulo ou em branco.';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_validar_nome_tipo_pagamento
+BEFORE INSERT OR UPDATE ON tipo_pagamento
+FOR EACH ROW
+EXECUTE FUNCTION trigger_validar_nome_tipo_pagamento();
+

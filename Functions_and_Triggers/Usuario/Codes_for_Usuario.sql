@@ -113,3 +113,33 @@ CREATE OR REPLACE FUNCTION contar_usuarios_por_tipo() RETURNS TABLE(tipo public.
 $$ LANGUAGE plpgsql;
 
 -- Triggers
+
+-- função para normalizar emails
+CREATE OR REPLACE FUNCTION trigger_normalizar_email()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.email := LOWER(TRIM(NEW.email));
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_normalizar_email
+BEFORE INSERT OR UPDATE ON usuario
+FOR EACH ROW
+EXECUTE FUNCTION trigger_normalizar_email();
+
+-- trigger para evitar senhas muito fracas
+CREATE OR REPLACE FUNCTION trigger_verificar_senha_fraca()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF LENGTH(NEW.senha) < 8 THEN
+        RAISE EXCEPTION 'Senha muito curta. Mínimo de 8 caracteres.';
+    END IF;
+
+    IF NEW.senha ~* '^(.)\1+$' THEN
+        RAISE EXCEPTION 'Senha muito fraca. Não repita o mesmo caractere.';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;

@@ -91,7 +91,8 @@ CREATE OR REPLACE FUNCTION listar_usuarios() RETURNS TABLE (id INT, nome VARCHAR
     END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION buscar_usuario_por_nome(p_nome TEXT) RETURNS TABLE (id INT, nome VARCHAR, email VARCHAR, tipo TIPOS_USUARIOS) AS $$
+-- Testada e validada
+CREATE OR REPLACE FUNCTION buscar_usuario_por_nome(p_nome VARCHAR) RETURNS TABLE (id INT, nome VARCHAR, mail VARCHAR, tipo TIPOS_USUARIOS) AS $$
     BEGIN
         RETURN QUERY
         SELECT id_usuario, nome_usuario, email, tipo_usuario FROM usuario
@@ -99,11 +100,13 @@ CREATE OR REPLACE FUNCTION buscar_usuario_por_nome(p_nome TEXT) RETURNS TABLE (i
     END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION contar_usuarios_por_tipo() RETURNS TABLE (tipo TIPOS_USUARIOS, quantidade INT) AS $$
+-- Testada e validada
+CREATE OR REPLACE FUNCTION contar_usuarios_por_tipo() RETURNS TABLE(tipo public.tipos_usuarios, total bigint) AS $$
     BEGIN
         RETURN QUERY
-        SELECT tipo_usuario, COUNT(*) FROM usuario
-        GROUP BY tipo_usuario;
+        SELECT tipo_usuario, COUNT(*) as total FROM usuario
+        GROUP BY tipo_usuario
+        ORDER BY total DESC;
     END;
 $$ LANGUAGE plpgsql;
 

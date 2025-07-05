@@ -166,6 +166,18 @@ CREATE OR REPLACE FUNCTION contar_assinaturas_por_status() RETURNS TABLE (status
     END;
 $$ LANGUAGE plpgsql;
 
+-- listar por preço
+CREATE FUNCTION listar_assinaturas_por_preco() RETURNS TABLE (id_assinatura INTEGER, nome_usuario VARCHAR, nome_produto VARCHAR, num_versao VARCHAR, preco NUMERIC, status public.status_assinatura) AS $$
+    BEGIN
+        RETURN QUERY
+        SELECT a.id_assinatura, u.nome_usuario, p.nome_produto, v.num_versao, p.preco, a.status FROM  assinatura a
+        JOIN usuario u ON a.usuario_id = u.id_usuario
+        JOIN versao v ON a.versao_id = v.id_versao
+        JOIN produto p ON v.produto_id = p.id_produto
+        ORDER BY p.preco ASC;
+    END;
+$$ LANGUAGE plpgsql;
+
 -- Triggers
 CREATE OR REPLACE FUNCTION impedir_assinatura_duplicada()
 RETURNS TRIGGER AS $$

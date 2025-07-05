@@ -1,6 +1,7 @@
 -- Funções
 
 -- Inserção automatizada
+-- Testada e validada
 CREATE OR REPLACE FUNCTION cadastrar_software(i_produto_id INT, i_tipo_licenca VARCHAR) RETURNS INT AS $$
     DECLARE
         i_id INT;

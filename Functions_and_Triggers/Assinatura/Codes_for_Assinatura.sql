@@ -1,5 +1,7 @@
 -- Funções
+
 -- Inserção automatizada
+-- Testada e validada
 CREATE OR REPLACE FUNCTION cadastrar_assinatura(i_usuario_id INT, i_versao_id INT, i_tipo_pagamento_id INT, i_data_inicio DATE, i_data_termino DATE DEFAULT NULL, i_status STATUS_ASSINATURA DEFAULT 'ativa') RETURNS INT AS $$
     DECLARE
         v_id INT;

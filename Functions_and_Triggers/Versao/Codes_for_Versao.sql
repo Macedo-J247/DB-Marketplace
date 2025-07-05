@@ -1,6 +1,7 @@
 -- Funções
 
 -- Inserção automatizada
+-- Testada e validada
 CREATE OR REPLACE FUNCTION cadastrar_versao(i_produto_id INT, i_num_versao VARCHAR, i_data_lancamento DATE) RETURNS INT AS $$
     DECLARE
         v_id INT;

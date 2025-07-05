@@ -1,6 +1,7 @@
 -- Funções
 
 -- Inserção automatizada
+-- Testada e validada
 CREATE OR REPLACE FUNCTION cadastrar_tipo_pagamento(i_nome_tipo TIPOS_PAGAMENTOS) RETURNS INT AS $$
     DECLARE
         v_id INT;

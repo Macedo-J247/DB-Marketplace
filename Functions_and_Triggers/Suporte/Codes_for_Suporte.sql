@@ -1,6 +1,7 @@
 -- Funções
 
 -- Inserção automatizada
+-- Testada e validada
 CREATE OR REPLACE FUNCTION cadastrar_suporte(i_usuario_id INT, i_produto_id INT, i_versao_id INT, i_tipo TIPOS_SUPORTES, i_descricao TEXT, i_status STATUS_SUPORTE DEFAULT 'aberto') RETURNS INT AS $$
     DECLARE
         v_id INT;

@@ -1,7 +1,8 @@
 -- Funções
 
 -- Inserção automatizada
-CREATE OR REPLACE FUNCTION cadastrar_usuario( i_nome_usuario VARCHAR, i_email VARCHAR, i_senha VARCHAR, i_tipo_usuario TIPOS_USUARIOS DEFAULT 'cliente') RETURNS INT AS $$
+-- Testada e validada
+CREATE OR REPLACE FUNCTION cadastrar_usuario(i_nome_usuario VARCHAR, i_email VARCHAR, i_senha VARCHAR, i_tipo_usuario TIPOS_USUARIOS DEFAULT 'cliente') RETURNS INT AS $$
     DECLARE
         v_id INT;
     BEGIN

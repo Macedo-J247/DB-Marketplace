@@ -1,6 +1,7 @@
 -- Funções
 
 -- Inserção automatizada
+-- Testada e validada
 CREATE OR REPLACE FUNCTION cadastrar_api(i_produto_id INT, i_endpoint_url VARCHAR) RETURNS INT AS $$
     DECLARE
         v_id INT;

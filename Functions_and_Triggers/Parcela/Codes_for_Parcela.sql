@@ -1,7 +1,8 @@
 -- Funções
 
 -- Inserção automatizada
-CREATE OR REPLACE FUNCTION cadastrar_parcela(i_assinatura_id INT, i_valor DECIMAL(10,2), i_data_vencimento DATE, i_data_pagamento DATE DEFAULT NULL, i_status STATUS_PARCELA) RETURNS INT AS $$
+-- Testada e validada
+CREATE OR REPLACE FUNCTION cadastrar_parcela(i_assinatura_id INT, i_valor DECIMAL(10,2), i_data_vencimento DATE, i_data_pagamento DATE, i_status STATUS_PARCELA) RETURNS INT AS $$
     DECLARE
         v_id INT;
     BEGIN

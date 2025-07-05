@@ -1,4 +1,5 @@
 -- Inserções globais por nome de tabela
+-- Testada e validada
 CREATE OR REPLACE FUNCTION insercao_global(tab TEXT, VARIADIC campos TEXT[]) RETURNS INT AS $$
     DECLARE
         resultado INT;

@@ -1,6 +1,7 @@
 -- Funções
 
 -- Inserção
+-- Testada e validada
 CREATE OR REPLACE FUNCTION cadastrar_avaliacao(i_usuario_id INT, i_versao_id INT, i_nota DECIMAL(3,2)) RETURNS INT AS $$
     DECLARE
         i_id INT;

@@ -1,7 +1,8 @@
 -- Funções
 
 -- Inserção automatizada
-CREATE OR REPLACE FUNCTION cadastrar_produto(i_desenvolvedor_id INT, i_categoria_id INT, i_nome_produto VARCHAR, i_descricao TEXT DEFAULT NULL, i_preco DECIMAL(10,2), i_tipo TIPOS_PRODUTOS, i_status STATUS_PRODUTOS, i_data_publicacao DATE RETURNS INT AS $$
+-- Testada e validada
+CREATE OR REPLACE FUNCTION cadastrar_produto(i_desenvolvedor_id INT, i_categoria_id INT, i_nome_produto VARCHAR, i_descricao TEXT, i_preco DECIMAL(10,2), i_tipo TIPOS_PRODUTOS, i_status STATUS_PRODUTOS, i_data_publicacao DATE) RETURNS INT AS $$
     DECLARE
         v_id INT;
     BEGIN

@@ -1,3 +1,5 @@
+-- Testados e Validados
+
 -- Usuário comum
 CREATE ROLE usuario_comum WITH LOGIN PASSWORD 'senha_usuario_comum';
 
@@ -10,6 +12,7 @@ CREATE ROLE desenvolvedor WITH LOGIN PASSWORD 'senha_desenvolvedor';
 -- Admin do marketplace
 CREATE ROLE admin_marketplace WITH LOGIN PASSWORD 'senha_@admin';
 
+-- Remoção de permissões
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
 REVOKE ALL ON ALL TABLES IN SCHEMA public FROM PUBLIC;
 REVOKE ALL ON ALL SEQUENCES IN SCHEMA public FROM PUBLIC;
@@ -40,8 +43,10 @@ GRANT INSERT, UPDATE ON desenvolvedor TO desenvolvedor;
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO admin_marketplace;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO admin_marketplace;
 
+-- Admin: acesso total
 ALTER DEFAULT PRIVILEGES IN SCHEMA public
 GRANT ALL ON TABLES TO admin_marketplace;
 
+-- Admin: Acesso total
 ALTER DEFAULT PRIVILEGES IN SCHEMA public
 GRANT USAGE, SELECT, UPDATE ON SEQUENCES TO admin_marketplace;

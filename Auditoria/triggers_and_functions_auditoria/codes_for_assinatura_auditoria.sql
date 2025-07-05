@@ -24,3 +24,8 @@ CREATE OR REPLACE FUNCTION log_auditoria_assinatura() RETURNS TRIGGER AS $$
         RETURN NULL;
     END;
 $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_auditoria_assinatura
+AFTER INSERT OR UPDATE OR DELETE ON assinatura
+FOR EACH ROW
+EXECUTE FUNCTION log_auditoria_assinatura();

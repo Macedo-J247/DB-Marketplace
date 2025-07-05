@@ -188,6 +188,7 @@ $$ LANGUAGE plpgsql;
 -- Triggers
 
 -- Impedir que uma assinatura seja duplicada
+-- Testada e validada
 CREATE OR REPLACE FUNCTION impedir_assinatura_duplicada()
 RETURNS TRIGGER AS $$
     BEGIN

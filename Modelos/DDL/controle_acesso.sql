@@ -8,14 +8,14 @@ CREATE ROLE cliente WITH LOGIN PASSWORD 'senha_cliente';
 CREATE ROLE desenvolvedor WITH LOGIN PASSWORD 'senha_desenvolvedor';
 
 -- Admin do marketplace
-CREATE ROLE admin_marketplace WITH LOGIN PASSWORD 'senha_admin';
+CREATE ROLE admin_marketplace WITH LOGIN PASSWORD 'senha_@admin';
 
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
 REVOKE ALL ON ALL TABLES IN SCHEMA public FROM PUBLIC;
 REVOKE ALL ON ALL SEQUENCES IN SCHEMA public FROM PUBLIC;
 
 -- Permissões básicas para leitura
-GRANT CONNECT ON DATABASE nome_do_banco TO usuario_comum, cliente, desenvolvedor, admin_marketplace;
+GRANT CONNECT ON DATABASE neondb TO usuario_comum, cliente, desenvolvedor, admin_marketplace;
 GRANT USAGE ON SCHEMA public TO usuario_comum, cliente, desenvolvedor, admin_marketplace;
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO usuario_comum, cliente, desenvolvedor, admin_marketplace;
 
@@ -42,4 +42,6 @@ GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO admin_marketplace;
 
 ALTER DEFAULT PRIVILEGES IN SCHEMA public
 GRANT ALL ON TABLES TO admin_marketplace;
-GRANT ALL ON SEQUENCES TO admin_marketplace;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT USAGE, SELECT, UPDATE ON SEQUENCES TO admin_marketplace;

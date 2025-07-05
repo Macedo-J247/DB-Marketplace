@@ -81,29 +81,33 @@ CREATE OR REPLACE FUNCTION excluir_categoria(_id INT, d_nome VARCHAR) RETURNS TE
 $$ LANGUAGE plpgsql;
 
 -- Busca por nome
+-- Testada e validada
 CREATE OR REPLACE FUNCTION buscar_categoria(b_nome VARCHAR) RETURNS TABLE (id INT, nome VARCHAR, descricao VARCHAR) AS $$
     BEGIN
         RETURN QUERY
-        SELECT id_categoria AS id, nome_categoria AS nome, descricao_categoria AS descricao FROM "categoria"
+        SELECT c.id_categoria AS id, c.nome_categoria AS nome, c.descricao FROM categoria c
         WHERE nome_categoria ILIKE '%' || b_nome || '%';
     END;
 $$ LANGUAGE plpgsql;
 
 -- Função para listar as categorias cadastradas
+-- Testada e validada
 CREATE OR REPLACE FUNCTION listar_categorias() RETURNS TABLE (id INT, nome VARCHAR, descricao VARCHAR) AS $$
     BEGIN
         RETURN QUERY
-        SELECT id_categoria, nome_categoria, descricao_categoria FROM categoria;
+        SELECT c.id_categoria, c.nome_categoria, c.descricao FROM categoria c;
     END;
 $$ LANGUAGE plpgsql;
 
 -- Função para contabilizar os produtos por categoria
-CREATE OR REPLACE FUNCTION contar_produtos_por_categoria() RETURNS TABLE (categoria_id INT, nome_categoria VARCHAR, total_produtos INT) AS $$
+-- Testada e validada
+CREATE FUNCTION contar_produtos_por_categoria() RETURNS TABLE(categoria_nome VARCHAR, total BIGINT) AS $$
     BEGIN
         RETURN QUERY
-        SELECT c.id_categoria, c.nome_categoria, COUNT(p.id_produto) AS total_produtos FROM categoria c
-        LEFT JOIN produto p ON p.categoria_id = c.id_categoria
-        GROUP BY c.id_categoria, c.nome_categoria;
+        SELECT c.nome_categoria, COUNT(p.id_produto) FROM categoria c
+        LEFT JOIN produto p ON c.id_categoria = p.categoria_id
+        GROUP BY c.nome_categoria
+        ORDER BY COUNT(p.id_produto) DESC;
     END;
 $$ LANGUAGE plpgsql;
 

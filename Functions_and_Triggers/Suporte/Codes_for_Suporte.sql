@@ -90,6 +90,7 @@ CREATE OR REPLACE_FUNCTION excluir_suporte(d_id_suporte INT, d_usuario_id INT) R
     END;
 $$ LANGUAGE plpgsql;
 
+-- Testada e validada
 CREATE OR REPLACE FUNCTION listar_suportes() RETURNS TABLE (id INT, usuario VARCHAR, produto VARCHAR, versao VARCHAR, tipo TIPOS_SUPORTES, status STATUS_SUPORTE, data TIMESTAMP, descricao TEXT) AS $$
     BEGIN
         RETURN QUERY
@@ -100,6 +101,7 @@ CREATE OR REPLACE FUNCTION listar_suportes() RETURNS TABLE (id INT, usuario VARC
     END;
 $$ LANGUAGE plpgsql;
 
+-- Testada e validada
 CREATE OR REPLACE FUNCTION buscar_suporte_por_usuario(p_nome TEXT) RETURNS TABLE (id INT, tipo TIPOS_SUPORTES, status STATUS_SUPORTE, data TIMESTAMP, descricao TEXT) AS $$
     BEGIN
         RETURN QUERY
@@ -109,6 +111,7 @@ CREATE OR REPLACE FUNCTION buscar_suporte_por_usuario(p_nome TEXT) RETURNS TABLE
     END;
 $$ LANGUAGE plpgsql;
 
+-- Testada e validada
 CREATE OR REPLACE FUNCTION listar_suportes_ativos() RETURNS TABLE (id INT, usuario VARCHAR, produto VARCHAR, tipo TIPOS_SUPORTES, status STATUS_SUPORTE, data TIMESTAMP) AS $$
     BEGIN
         RETURN QUERY
@@ -119,11 +122,12 @@ CREATE OR REPLACE FUNCTION listar_suportes_ativos() RETURNS TABLE (id INT, usuar
     END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION contar_suportes_por_status() RETURNS TABLE (status STATUS_SUPORTE, total INT) AS $$
+-- Testada e validada
+CREATE OR REPLACE FUNCTION contar_suportes_por_status() RETURNS TABLE (status public.status_suporte, total bigint) AS $$
     BEGIN
         RETURN QUERY
-        SELECT status, COUNT(*) FROM suporte
-        GROUP BY status;
+        SELECT s.status, COUNT(*) FROM suporte s
+        GROUP BY s.status;
     END;
 $$ LANGUAGE plpgsql;
 

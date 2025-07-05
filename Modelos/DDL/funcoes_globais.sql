@@ -51,12 +51,12 @@ CREATE OR REPLACE FUNCTION atualizacao_global(tab TEXT, VARIADIC campos TEXT[]) 
                 EXECUTE format('SELECT atualizar_categoria(%s::INT, %L, %L)', campos[1], campos[2], campos[3]) INTO resultado;
 
             WHEN 'usuario' THEN
-                EXECUTE format('SELECT atualizar_usuario(%s::INT, %L, %L, %L)', campos[1], campos[2], campos[3], campos[4]) INTO resultado;
+                EXECUTE format('SELECT atualizar_usuario(%s::INT, %L, %L, %L, %L::TIPOS_USUARIOS)', campos[1], campos[2], campos[3], campos[4], campos[5]) INTO resultado;
 
             WHEN 'produto' THEN
                 EXECUTE format(
-                    'SELECT atualizar_produto(%s::INT, %s::INT, %L, %L, NULLIF(%s, ''NULL'')::DECIMAL, %s::TIPOS_PRODUTOS, %s::STATUS_PRODUTOS, %s::DATE, NULLIF(%s, ''NULL'')::DATE)',
-                    campos[1], campos[2], campos[3], campos[4], campos[5], campos[6], campos[7], campos[8], campos[9]
+                    'SELECT atualizar_produto(%s::INT, %s::INT, %s::INT, %L, %L, NULLIF(%s, ''NULL'')::DECIMAL, %s::TIPOS_PRODUTOS, %s::STATUS_PRODUTOS, %s::DATE, NULLIF(%s, ''NULL'')::DATE)',
+                    campos[1], campos[2], campos[3], campos[4], campos[5], campos[6], campos[7], campos[8], campos[9], campos[10]
                 ) INTO resultado;
 
             WHEN 'software' THEN
@@ -66,18 +66,17 @@ CREATE OR REPLACE FUNCTION atualizacao_global(tab TEXT, VARIADIC campos TEXT[]) 
                 EXECUTE format('SELECT atualizar_api(%s::INT, %L)', campos[1], campos[2]) INTO resultado;
 
             WHEN 'versao' THEN
-                EXECUTE format('SELECT atualizar_versao(%s::INT, %L, %s::DATE)', campos[1], campos[2], campos[3]) INTO resultado;
+                EXECUTE format('SELECT atualizar_versao(%s::INT, %s::INT, %L, %s::DATE)', campos[1], campos[2], campos[3], campos[4]) INTO resultado;
 
             WHEN 'suporte' THEN
                 EXECUTE format(
-                    'SELECT atualizar_suporte(%s::INT, %s::INT, %s::INT, %s::TIPOS_SUPORTES, %L, %s::STATUS_SUPORTE)',
-                    campos[1], campos[2], campos[3], campos[4], campos[5], campos[6]
+                    'SELECT atualizar_suporte(%s::INT, %s::TIPOS_SUPORTES, %L, %s::STATUS_SUPORTE)', campos[1], campos[2], campos[3], campos[4]
                 ) INTO resultado;
 
             WHEN 'avaliacao' THEN
                 EXECUTE format(
-                    'SELECT atualizar_avaliacao(%s::INT, %s::INT, %s::DECIMAL, %s::DATE)',
-                    campos[1], campos[2], campos[3], campos[4]
+                    'SELECT atualizar_avaliacao(%s::INT, %s::DECIMAL, %s::DATE)',
+                    campos[1], campos[2], campos[3]
                 ) INTO resultado;
 
             WHEN 'tipo_pagamento' THEN
@@ -91,8 +90,7 @@ CREATE OR REPLACE FUNCTION atualizacao_global(tab TEXT, VARIADIC campos TEXT[]) 
 
             WHEN 'parcela' THEN
                 EXECUTE format(
-                    'SELECT atualizar_parcela(%s::INT, %s::INT, %s::DECIMAL, %s::DATE, %s::STATUS_PARCELA)',
-                    campos[1], campos[2], campos[3], campos[4], campos[5]
+                    'SELECT atualizar_parcela(%s::INT, %s::INT, %s::DECIMAL, %s::DATE, %s::DATE, %s::STATUS_PARCELA)', campos[1], campos[2], campos[3], campos[4], campos[5], campos[6]
                 ) INTO resultado;
 
             ELSE

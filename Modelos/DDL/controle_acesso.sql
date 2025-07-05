@@ -22,6 +22,7 @@ GRANT CONNECT ON DATABASE neondb TO usuario_comum, cliente, desenvolvedor, admin
 GRANT USAGE ON SCHEMA public TO usuario_comum, cliente, desenvolvedor, admin_marketplace;
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO usuario_comum, cliente, desenvolvedor, admin_marketplace;
 
+-- Permissões básicas para leitura
 ALTER DEFAULT PRIVILEGES IN SCHEMA public
 GRANT SELECT ON TABLES TO usuario_comum, cliente, desenvolvedor, admin_marketplace;
 

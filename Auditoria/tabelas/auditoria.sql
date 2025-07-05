@@ -1,3 +1,6 @@
+-- Tabelas de Auditoria
+
+-- Auditoria para a tabela de assinatura
 CREATE TABLE auditoria_assinatura (
     id_auditoria SERIAL PRIMARY KEY,
     id_assinatura INT,

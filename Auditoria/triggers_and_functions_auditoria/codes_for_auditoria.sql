@@ -1,3 +1,6 @@
+-- Triggers
+
+-- Trigger para preenchimento da tabela de auditoria referente a tabela assinatura
 CREATE OR REPLACE FUNCTION log_auditoria_assinatura() RETURNS TRIGGER AS $$
     BEGIN
         -- INSERT

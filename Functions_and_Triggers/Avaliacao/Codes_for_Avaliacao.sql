@@ -79,14 +79,13 @@ CREATE OR REPLACE FUNCTION atualizar_avaliacao(u_id_avaliacao INT, u_nota DECIMA
 $$ LANGUAGE plpgsql;
 
 -- Remoção automatizada
+-- Testada e validada
 CREATE OR REPLACE FUNCTION excluir_avaliacao(d_id_avaliacao INT, d_usuario_id INT) RETURNS TEXT AS $$
     DECLARE
         d_old RECORD;
     BEGIN
-        SELECT * INTO d_old
-        FROM "avaliacao"
-        WHERE "id_avaliacao" = d_id_avaliacao;
-        
+        SELECT * INTO d_old FROM "avaliacao"
+        WHERE "id_avaliacao" = d_id_avaliacao;  
         IF NOT FOUND THEN
             RETURN format('Avaliação ID %s não encontrada.', d_id_avaliacao);
         END IF;

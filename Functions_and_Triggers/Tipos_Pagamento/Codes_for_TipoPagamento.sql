@@ -53,32 +53,33 @@ CREATE OR REPLACE FUNCTION atualizar_tipo_pagamento(u_id_tipo_pagamento INT, u_n
 $$ LANGUAGE plpgsql;
 
 -- Remoção automatizada
+-- Testada e validada
 CREATE OR REPLACE FUNCTION excluir_tipo_pagamento(d_id_tipo_pagamento INT, d_nome_tipo TIPOS_PAGAMENTOS) RETURNS TEXT AS $$
-DECLARE
-    v_old RECORD;
-BEGIN
-    SELECT * INTO v_old FROM "tipo_pagamento"
-    WHERE "id_tipo_pagamento" = d_id_tipo_pagamento;
-    IF NOT FOUND THEN
-        RETURN format('Tipo de pagamento ID %s não encontrado.', d_id_tipo_pagamento);
-    END IF;
+    DECLARE
+        v_old RECORD;
+    BEGIN
+        SELECT * INTO v_old FROM "tipo_pagamento"
+        WHERE "id_tipo_pagamento" = d_id_tipo_pagamento;
+        IF NOT FOUND THEN
+            RETURN format('Tipo de pagamento ID %s não encontrado.', d_id_tipo_pagamento);
+        END IF;
 
-    IF d_nome_tipo IS NULL OR v_old.nome_tipo <> d_nome_tipo THEN
-        RETURN format('O nome informado ("%s") não confere com o cadastro ("%s").', d_nome_tipo, v_old.nome_tipo);
-    END IF;
+        IF d_nome_tipo IS NULL OR v_old.nome_tipo <> d_nome_tipo THEN
+            RETURN format('O nome informado ("%s") não confere com o cadastro ("%s").', d_nome_tipo, v_old.nome_tipo);
+        END IF;
 
-    IF EXISTS (
-        SELECT 1 FROM "assinatura"
-        WHERE "tipo_pagamento_id" = d_id_tipo_pagamento
-    ) THEN
-        RETURN format('Não foi possível excluir: há assinaturas vinculadas ao tipo "%s".', v_old.nome_tipo);
-    END IF;
+        IF EXISTS (
+            SELECT 1 FROM "assinatura"
+            WHERE "tipo_pagamento_id" = d_id_tipo_pagamento
+        ) THEN
+            RETURN format('Não foi possível excluir: há assinaturas vinculadas ao tipo "%s".', v_old.nome_tipo);
+        END IF;
 
-    DELETE FROM "tipo_pagamento"
-    WHERE "id_tipo_pagamento" = d_id_tipo_pagamento;
+        DELETE FROM "tipo_pagamento"
+        WHERE "id_tipo_pagamento" = d_id_tipo_pagamento;
 
-    RETURN format('Tipo de pagamento "%s" (ID %s) excluído com sucesso.', v_old.nome_tipo, d_id_tipo_pagamento);
-END;
+        RETURN format('Tipo de pagamento "%s" (ID %s) excluído com sucesso.', v_old.nome_tipo, d_id_tipo_pagamento);
+    END;
 $$ LANGUAGE plpgsql;
 
 -- Listar os tipos de pagamentos cadastrados

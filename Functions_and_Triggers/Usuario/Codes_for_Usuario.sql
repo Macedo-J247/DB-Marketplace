@@ -53,35 +53,36 @@ CREATE OR REPLACE FUNCTION atualizar_usuario(u_id_usuario INT, u_nome_usuario VA
 $$ LANGUAGE plpgsql;
 
 -- Remoção automatizada
+-- Testada e validada
 CREATE OR REPLACE FUNCTION excluir_usuario(d_id_usuario INT, d_nome_usuario VARCHAR) RETURNS TEXT AS $$
-DECLARE
-    v_old RECORD;
-BEGIN
-    SELECT * INTO v_old FROM "usuario"
-    WHERE "id_usuario" = d_id_usuario;
-    IF NOT FOUND THEN
-        RETURN format('Nenhum usuário com ID %s encontrado.', d_id_usuario);
-    END IF;
+    DECLARE
+        v_old RECORD;
+    BEGIN
+        SELECT * INTO v_old FROM "usuario"
+        WHERE "id_usuario" = d_id_usuario;
+        IF NOT FOUND THEN
+            RETURN format('Nenhum usuário com ID %s encontrado.', d_id_usuario);
+        END IF;
 
-    IF d_nome_usuario IS NULL OR LOWER(v_old.nome_usuario) <> LOWER(d_nome_usuario) THEN
-        RETURN format('O nome informado ("%s") não confere com o cadastro ("%s").', d_nome_usuario, v_old.nome_usuario);
-    END IF;
+        IF d_nome_usuario IS NULL OR LOWER(v_old.nome_usuario) <> LOWER(d_nome_usuario) THEN
+            RETURN format('O nome informado ("%s") não confere com o cadastro ("%s").', d_nome_usuario, v_old.nome_usuario);
+        END IF;
 
-    IF EXISTS (
-        SELECT 1 FROM "suporte" WHERE "usuario_id" = d_id_usuario
-    ) OR EXISTS (
-        SELECT 1 FROM "avaliacao" WHERE "usuario_id" = d_id_usuario
-    ) OR EXISTS (
-        SELECT 1 FROM "assinatura" WHERE "usuario_id" = d_id_usuario
-    ) THEN
-        RETURN format('Não é possível excluir: usuário "%s" possui dados vinculados.', v_old.nome_usuario);
-    END IF;
+        IF EXISTS (
+            SELECT 1 FROM "suporte" WHERE "usuario_id" = d_id_usuario
+        ) OR EXISTS (
+            SELECT 1 FROM "avaliacao" WHERE "usuario_id" = d_id_usuario
+        ) OR EXISTS (
+            SELECT 1 FROM "assinatura" WHERE "usuario_id" = d_id_usuario
+        ) THEN
+            RETURN format('Não é possível excluir: usuário "%s" possui dados vinculados.', v_old.nome_usuario);
+        END IF;
 
-    DELETE FROM "usuario"
-    WHERE "id_usuario" = d_id_usuario;
+        DELETE FROM "usuario"
+        WHERE "id_usuario" = d_id_usuario;
 
-    RETURN format('Usuário "%s" (ID %s) excluído com sucesso.', v_old.nome_usuario, d_id_usuario);
-END;
+        RETURN format('Usuário "%s" (ID %s) excluído com sucesso.', v_old.nome_usuario, d_id_usuario);
+    END;
 $$ LANGUAGE plpgsql;
 
 -- Testada e validada

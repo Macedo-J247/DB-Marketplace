@@ -77,6 +77,7 @@ CREATE OR REPLACE FUNCTION atualizacao_global(tab TEXT, VARIADIC campos TEXT[]) 
 $$ LANGUAGE plpgsql;
 
 -- Remoções globais por nome de tabela
+-- Testada e validada
 CREATE OR REPLACE FUNCTION remocao_global(tab TEXT, VARIADIC campos TEXT[]) RETURNS TEXT AS $$
     DECLARE
         resultado TEXT;

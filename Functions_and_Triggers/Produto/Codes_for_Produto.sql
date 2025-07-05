@@ -84,6 +84,7 @@ CREATE OR REPLACE FUNCTION atualizar_produto(u_id_produto INT, u_desenvolvedor_i
 $$ LANGUAGE plpgsql;
 
 -- Remoção automatizada
+-- Testada e validada
 CREATE OR REPLACE FUNCTION excluir_produto(d_id_produto INT, d_nome_produto VARCHAR) RETURNS TEXT AS $$
     DECLARE
         v_old RECORD;
@@ -95,13 +96,13 @@ CREATE OR REPLACE FUNCTION excluir_produto(d_id_produto INT, d_nome_produto VARC
         END IF;
 
         IF d_nome_produto IS NULL OR LOWER(v_old.nome_produto) <> LOWER(d_nome_produto) THEN
-            RETURN format( 'Nome informado ("%s") não confere com "%s".', d_nome_produto, v_old.nome_produto);
+            RETURN format('Nome informado ("%s") não confere com "%s".', d_nome_produto, v_old.nome_produto);
         END IF;
 
         IF EXISTS (
-            SELECT 1 FROM "versao"     WHERE "produto_id" = d_id_produto
+            SELECT 1 FROM "versao" WHERE "produto_id" = d_id_produto
         ) OR EXISTS (
-            SELECT 1 FROM "suporte"    WHERE "produto_id" = d_id_produto
+            SELECT 1 FROM "suporte" WHERE "produto_id" = d_id_produto
         ) OR EXISTS (
             SELECT 1 FROM "assinatura" WHERE "versao_id" IN (
                 SELECT "id_versao" FROM "versao" WHERE "produto_id" = d_id_produto

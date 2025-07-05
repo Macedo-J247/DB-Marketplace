@@ -94,6 +94,7 @@ CREATE OR REPLACE FUNCTION atualizar_assinatura(u_id_assinatura INT, u_usuario_i
 $$ LANGUAGE plpgsql;
 
 -- Remoção automatizada
+-- Testada e validada
 CREATE OR REPLACE FUNCTION excluir_assinatura(d_id_assinatura INT, d_usuario_id INT) RETURNS TEXT AS $$
     DECLARE
         d_old RECORD;

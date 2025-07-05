@@ -53,7 +53,8 @@ CREATE OR REPLACE FUNCTION atualizar_categoria(u_id INT, u_nome VARCHAR, u_descr
 $$ LANGUAGE plpgsql;
 
 -- Remoção automatizada
-CREATE OR REPLACE FUNCTION excluir_categoria(_id INT, d_nome VARCHAR) RETURNS TEXT AS $$
+-- Testada e validada
+CREATE OR REPLACE FUNCTION excluir_categoria(d_id INT, d_nome VARCHAR) RETURNS TEXT AS $$
     DECLARE
         d_old RECORD;
     BEGIN

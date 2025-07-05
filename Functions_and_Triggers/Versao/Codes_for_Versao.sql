@@ -91,6 +91,7 @@ CREATE OR REPLACE FUNCTION atualizar_versao(u_id_versao INT, u_produto_id INT, u
 $$ LANGUAGE plpgsql;
 
 -- Remoção automatizada
+-- Testada e validada
 CREATE OR REPLACE FUNCTION excluir_versao(d_id_versao INT, d_num_versao VARCHAR) RETURNS TEXT AS $$
     DECLARE
         v_old RECORD;
@@ -105,7 +106,6 @@ CREATE OR REPLACE FUNCTION excluir_versao(d_id_versao INT, d_num_versao VARCHAR)
             RETURN format('O número informado ("%s") não confere com o cadastro ("%s").', d_num_versao, v_old.num_versao);
         END IF;
 
-        -- 3.3) Impede exclusão se houver dados filhos
         IF EXISTS (
             SELECT 1 FROM "suporte" WHERE "versao_id" = d_id_versao
         ) OR EXISTS (

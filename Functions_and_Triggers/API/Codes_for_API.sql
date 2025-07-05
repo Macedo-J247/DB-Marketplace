@@ -70,6 +70,7 @@ CREATE OR REPLACE FUNCTION atualizar_api(u_produto_id INT, u_endpoint_url VARCHA
 $$ LANGUAGE plpgsql;
 
 -- Remoção automatizada
+-- Testada e validada
 CREATE OR REPLACE FUNCTION excluir_api(d_produto_id INT, d_endpoint_url VARCHAR) RETURNS TEXT AS $$
     DECLARE
         d_old RECORD;

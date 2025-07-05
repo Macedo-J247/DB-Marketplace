@@ -70,7 +70,8 @@ CREATE OR REPLACE FUNCTION atualizar_suporte(u_id_suporte INT, u_tipo TIPOS_SUPO
 $$ LANGUAGE plpgsql;
 
 -- Remoção automatizada
-CREATE OR REPLACE_FUNCTION excluir_suporte(d_id_suporte INT, d_usuario_id INT) RETURNS TEXT AS $$
+-- Testada e validada
+CREATE OR REPLACE FUNCTION excluir_suporte(d_id_suporte INT, d_usuario_id INT) RETURNS TEXT AS $$
     DECLARE
         v_old RECORD;
     BEGIN

@@ -58,6 +58,7 @@ CREATE OR REPLACE FUNCTION atualizar_software(u_produto_id INT, u_tipo_licenca V
 $$ LANGUAGE plpgsql;
 
 -- Remoção automatizada
+-- Testada e validada
 CREATE OR REPLACE FUNCTION excluir_software(d_produto_id INT, d_tipo_licenca VARCHAR) RETURNS TEXT AS $$
     DECLARE
         d_old RECORD;

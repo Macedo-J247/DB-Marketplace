@@ -79,6 +79,7 @@ CREATE OR REPLACE FUNCTION excluir_software(d_produto_id INT, d_tipo_licenca VAR
 $$ LANGUAGE plpgsql;
 
 -- Listar softwares
+-- Testada e validada
 CREATE OR REPLACE FUNCTION listar_softwares() RETURNS TABLE (id INT, nome VARCHAR, descricao TEXT, preco NUMERIC, status STATUS_PRODUTOS, tipo_licenca VARCHAR, data_publicacao DATE) AS $$
     BEGIN
         RETURN QUERY
@@ -88,6 +89,7 @@ CREATE OR REPLACE FUNCTION listar_softwares() RETURNS TABLE (id INT, nome VARCHA
 $$ LANGUAGE plpgsql;
 
 -- buscar por nome
+-- Testada e validada
 CREATE OR REPLACE FUNCTION buscar_softwares_por_nome(p_nome TEXT) RETURNS TABLE (id INT, nome VARCHAR, tipo_licenca VARCHAR, status STATUS_PRODUTOS) AS $$
     BEGIN
         RETURN QUERY
@@ -98,6 +100,7 @@ CREATE OR REPLACE FUNCTION buscar_softwares_por_nome(p_nome TEXT) RETURNS TABLE 
 $$ LANGUAGE plpgsql;
 
 -- Listar por licença
+-- Testada e validada
 CREATE OR REPLACE FUNCTION listar_softwares_por_licenca(p_licenca TEXT) RETURNS TABLE (id INT, nome VARCHAR, descricao TEXT, preco NUMERIC, status STATUS_PRODUTOS) AS $$
     BEGIN
         RETURN QUERY
@@ -108,12 +111,24 @@ CREATE OR REPLACE FUNCTION listar_softwares_por_licenca(p_licenca TEXT) RETURNS 
 $$ LANGUAGE plpgsql;
 
 -- listar ativos
+-- Testada e validada
 CREATE OR REPLACE FUNCTION listar_softwares_ativos() RETURNS TABLE (id INT, nome VARCHAR, tipo_licenca VARCHAR) AS $$
     BEGIN
         RETURN QUERY
         SELECT p.id_produto, p.nome_produto, s.tipo_licenca FROM produto p
         JOIN software s ON s.produto_id = p.id_produto
         WHERE p.status = 'ativo';
+    END;
+$$ LANGUAGE plpgsql;
+
+-- Listar por preco
+-- Testada e validada
+CREATE FUNCTION listar_softwares_por_preco() RETURNS TABLE(id integer, nome character varying, preco numeric, tipo_licenca character varying) AS $$
+    BEGIN
+        RETURN QUERY
+        SELECT p.id_produto, p.nome_produto, p.preco, s.tipo_licenca FROM produto p
+        JOIN software s ON s.produto_id = p.id_produto
+        ORDER BY p.preco;
     END;
 $$ LANGUAGE plpgsql;
 

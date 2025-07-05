@@ -91,6 +91,7 @@ CREATE OR REPLACE FUNCTION excluir_api(d_produto_id INT, d_endpoint_url VARCHAR)
 $$ LANGUAGE plpgsql;
 
 -- Listar API
+-- Testada e validada
 CREATE OR REPLACE FUNCTION listar_apis() RETURNS TABLE (id INT, nome VARCHAR, descricao TEXT, preco NUMERIC, status STATUS_PRODUTOS, url VARCHAR, data_publicacao DATE) AS $$
     BEGIN
         RETURN QUERY
@@ -100,6 +101,7 @@ CREATE OR REPLACE FUNCTION listar_apis() RETURNS TABLE (id INT, nome VARCHAR, de
 $$ LANGUAGE plpgsql;
 
 -- Busca por nome
+-- Testada e validada
 CREATE OR REPLACE FUNCTION buscar_apis_por_nome(p_nome TEXT) RETURNS TABLE (id INT, nome VARCHAR, url VARCHAR, status STATUS_PRODUTOS) AS $$
     BEGIN
         RETURN QUERY
@@ -110,12 +112,24 @@ CREATE OR REPLACE FUNCTION buscar_apis_por_nome(p_nome TEXT) RETURNS TABLE (id I
 $$ LANGUAGE plpgsql;
 
 -- Listar ativas
+-- Testada e validada
 CREATE OR REPLACE FUNCTION listar_apis_ativas() RETURNS TABLE (id INT, nome VARCHAR, url VARCHAR) AS $$
     BEGIN
         RETURN QUERY
         SELECT p.id_produto, p.nome_produto, a.endpoint_url FROM produto p
         JOIN api a ON a.produto_id = p.id_produto
         WHERE p.status = 'ativo';
+    END;
+$$ LANGUAGE plpgsql;
+
+-- listar por preço
+CREATE FUNCTION listar_apis_por_preco() RETURNS TABLE(id integer, nome character varying, preco numeric, url character varying) AS $$
+    BEGIN
+        RETURN QUERY
+        SELECT p.id_produto, p.nome_produto, p.preco, a.endpoint_url
+        FROM produto p
+        JOIN api a ON a.produto_id = p.id_produto
+        ORDER BY p.preco;
     END;
 $$ LANGUAGE plpgsql;
 

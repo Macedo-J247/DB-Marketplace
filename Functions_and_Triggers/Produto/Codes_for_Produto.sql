@@ -194,3 +194,87 @@ BEFORE UPDATE ON produto
 FOR EACH ROW
 EXECUTE FUNCTION verificar_versao_antes_ativar();
 
+-- Função: validar_nome_produto_unico
+-- Objetivo: Garante que o nome do produto seja único, ignorando maiúsculas/minúsculas.
+CREATE OR REPLACE FUNCTION validar_nome_produto_unico() RETURNS TRIGGER AS $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM produto
+        WHERE LOWER(nome_produto) = LOWER(NEW.nome_produto)
+        AND id_produto IS DISTINCT FROM COALESCE(OLD.id_produto, 0) -- Permite update do próprio registro
+    ) THEN
+        RAISE EXCEPTION 'Já existe um produto com o nome "%". Nomes de produtos devem ser únicos (ignorando maiúsculas/minúsculas).', NEW.nome_produto;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Função: validar_data_publicacao_produto
+-- Objetivo: Garante que a data de publicação de um produto não seja futura.
+CREATE OR REPLACE FUNCTION validar_data_publicacao_produto() RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.data_publicacao > CURRENT_DATE THEN
+        RAISE EXCEPTION 'A data de publicação do produto ("%") não pode ser futura.', NEW.data_publicacao;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Função: impedir_exclusao_produto_com_dependencias
+-- Objetivo: Impede a exclusão de um produto se ele tiver versões, suportes ou assinaturas vinculadas.
+--           Esta função complementa as FKs (ON DELETE RESTRICT) e oferece uma mensagem mais específica.
+CREATE OR REPLACE FUNCTION impedir_exclusao_produto_com_dependencias() RETURNS TRIGGER AS $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM versao WHERE produto_id = OLD.id_produto) THEN
+        RAISE EXCEPTION 'Não é possível excluir o produto "%" (ID: %) porque existem versões vinculadas a ele.', OLD.nome_produto, OLD.id_produto;
+    END IF;
+    IF EXISTS (SELECT 1 FROM suporte WHERE produto_id = OLD.id_produto) THEN
+        RAISE EXCEPTION 'Não é possível excluir o produto "%" (ID: %) porque existem solicitações de suporte vinculadas a ele.', OLD.nome_produto, OLD.id_produto;
+    END IF;
+    -- A verificação de assinatura via versao_id já está na função excluir_produto,
+    -- mas se a FK não for RESTRICT, um trigger aqui seria vital.
+    -- Assumindo que as FKs já estão com ON DELETE RESTRICT, este trigger é mais para uma mensagem customizada.
+    RETURN OLD; -- Permite a operação se não houver dependências ativas
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- Trigger: trg_verificar_versao_antes_ativar (já existia no seu código)
+-- Objetivo: Chama a função verificar_versao_antes_ativar para impedir a ativação de produtos sem versão.
+-- Disparo: Antes de ATUALIZAR registros na tabela 'produto'.
+CREATE TRIGGER trg_verificar_versao_antes_ativar
+BEFORE UPDATE ON produto
+FOR EACH ROW
+EXECUTE FUNCTION verificar_versao_antes_ativar();
+
+-- NOVO Trigger: trg_validar_preco_produto
+-- Objetivo: Chama a função validar_preco_produto para garantir que o preço seja válido.
+-- Disparo: Antes de INSERIR ou ATUALIZAR registros na tabela 'produto'.
+CREATE TRIGGER trg_validar_preco_produto
+BEFORE INSERT OR UPDATE ON produto
+FOR EACH ROW
+EXECUTE FUNCTION validar_preco_produto();
+
+-- NOVO Trigger: trg_validar_nome_produto_unico
+-- Objetivo: Chama a função validar_nome_produto_unico para garantir que o nome do produto seja único.
+-- Disparo: Antes de INSERIR ou ATUALIZAR registros na tabela 'produto'.
+CREATE TRIGGER trg_validar_nome_produto_unico
+BEFORE INSERT OR UPDATE ON produto
+FOR EACH ROW
+EXECUTE FUNCTION validar_nome_produto_unico();
+
+-- NOVO Trigger: trg_validar_data_publicacao_produto
+-- Objetivo: Chama a função validar_data_publicacao_produto para garantir que a data de publicação não seja futura.
+-- Disparo: Antes de INSERIR ou ATUALIZAR registros na tabela 'produto'.
+CREATE TRIGGER trg_validar_data_publicacao_produto
+BEFORE INSERT OR UPDATE ON produto
+FOR EACH ROW
+EXECUTE FUNCTION validar_data_publicacao_produto();
+
+-- NOVO Trigger: trg_impedir_exclusao_produto_com_dependencias
+-- Objetivo: Chama a função impedir_exclusao_produto_com_dependencias para evitar a exclusão de produtos com dependências.
+-- Disparo: Antes de DELETAR registros na tabela 'produto'.
+CREATE TRIGGER trg_impedir_exclusao_produto_com_dependencias
+BEFORE DELETE ON produto
+FOR EACH ROW
+EXECUTE FUNCTION impedir_exclusao_produto_com_dependencias();

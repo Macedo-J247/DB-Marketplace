@@ -33,6 +33,10 @@ SELECT insercao_global('categoria', 'Pagamentos', 'Integração com sistemas fin
 SELECT insercao_global('categoria', 'Geolocalização', 'Serviços de mapas, endereços e rastreamento');
 
 -- Usuários
+-- Exemplo
+
+-- SELECT insercao_global('usuario', 'nome sobrenome', 'email@mail.com', 'senha', 'tipo do cliente');
+
 -- Testada e validada
 SELECT insercao_global('usuario', 'Carlos Lima', 'carlos.lima@cliente.com', '123senha', 'cliente');
 SELECT insercao_global('usuario', 'Mariana Dias', 'mariana.dias@cliente.com', '456senha', 'cliente');
@@ -94,6 +98,10 @@ SELECT insercao_global('versao', '5', 'beta', '2024-05-15');
 SELECT insercao_global('versao', '7', 'v2.0', '2024-06-20');
 
 -- Avaliações
+-- Exemplo
+
+-- SELECT insercao_global('avaliacao', 'id do usuário', 'id da versão do produto', 'nota da avaliação', 'data da avaliacao');
+
 -- Testada e validada
 SELECT insercao_global('avaliacao', '1', '1', '4.5', '2024-03-01');
 SELECT insercao_global('avaliacao', '2', '2', '5.0', '2024-03-05');
@@ -110,6 +118,10 @@ SELECT insercao_global('suporte', '5', '5', '5', 'erro', 'Erro ao exportar PNG',
 SELECT insercao_global('suporte', '6', '6', '6', 'duvida', 'Dúvida sobre plano de assinatura', 'aberto');
 
 -- Assinaturas
+-- Exemplo
+
+-- SELECT insercao_global('assinatura', 'id do usuário', 'id da versão', 'id do tipo de pagamento', 'data de início', 'data de término', 'tipo de assinatura');
+
 -- Testada e validada
 SELECT insercao_global('assinatura', '1', '3', '1', '2024-04-01', NULL, 'ativa');
 SELECT insercao_global('assinatura', '2', '4', '3', '2024-04-10', NULL, 'ativa');

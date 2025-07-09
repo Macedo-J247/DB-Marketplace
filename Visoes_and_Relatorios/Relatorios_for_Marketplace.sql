@@ -30,15 +30,15 @@ WHERE p.status = 'pago'
 GROUP BY DATE_TRUNC('month', p.data_pagamento)
 ORDER BY mes_referencia;
 
--- 🧩 5. Produtos com suporte aberto e nota < 3
+-- 🧩 5. Produtos com suporte aberto
 -- Testada e validada
 CREATE OR REPLACE VIEW vw_produtos_problema AS
-SELECT p.nome_produto, COUNT(s.id_suporte) AS total_suportes_abertos, ROUND(AVG(a.nota), 2) AS media_nota FROM produto p
+SELECT p.nome_produto, COUNT(s.id_suporte) AS total_suportes_abertos FROM produto p
 JOIN versao v ON v.produto_id = p.id_produto
 LEFT JOIN suporte s ON s.versao_id = v.id_versao AND s.status IN ('aberto', 'em andamento')
 LEFT JOIN avaliacao a ON a.versao_id = v.id_versao
 GROUP BY p.nome_produto
-HAVING COUNT(s.id_suporte) > 0 AND AVG(a.nota) < 3;
+HAVING COUNT(s.id_suporte) > 0;
 
 -- 🧑‍💻 6. Total de produtos por desenvolvedor
 -- Testada e validade

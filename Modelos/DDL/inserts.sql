@@ -110,6 +110,10 @@ SELECT insercao_global('avaliacao', '5', '4', '4.2', '2024-05-01');
 SELECT insercao_global('avaliacao', '6', '6', '4.8', '2024-06-01');
 
 -- Suportes
+-- Exemplo
+
+-- SELECT insercao_global('suporte', 'id do usuário', 'id do produto', 'id da versao', 'tipo do suporte', 'descricao do suporte', 'status dos suporte');
+
 -- Testada e validada
 SELECT insercao_global('suporte', '1', '1', '1', 'erro', 'Erro ao abrir imagem', 'aberto');
 SELECT insercao_global('suporte', '2', '3', '3', 'duvida', 'Como configurar OAuth?', 'em andamento');

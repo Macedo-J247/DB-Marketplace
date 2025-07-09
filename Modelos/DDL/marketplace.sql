@@ -180,7 +180,7 @@ CREATE TABLE "assinatura" (
 -- Detalhes das parcelas de pagamento de uma assinatura.
 
 -- Enum para os status das parcelas
-CREATE TYPE STATUS_PARCELA AS ENUM('pendendte', 'pago', 'atrasado', 'falha', 'estornado');
+CREATE TYPE STATUS_PARCELA AS ENUM('pendente', 'pago', 'atrasado', 'falha', 'estornado');
 
 CREATE TABLE "parcela" (
     "id_parcela" SERIAL PRIMARY KEY,

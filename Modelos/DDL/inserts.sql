@@ -1,4 +1,12 @@
+-- Exemplo geral
+
+-- SELECT insercao_global('tabela', 'dados', 'referente', 'aquela', 'tabela');
+
 -- Desenvolvedores
+-- Exemplo
+
+-- SELECT insercao_global('desenvolvedor', 'nome sobrenome', 'email@mail.com');
+
 -- Testada e validada
 SELECT insercao_global('desenvolvedor', 'Ana Silva', 'ana.silva@dev.com');
 SELECT insercao_global('desenvolvedor', 'Jose Santos', 'jose.santos@dev.com');
@@ -42,6 +50,10 @@ SELECT insercao_global('tipo_pagamento', 'boleto');
 SELECT insercao_global('tipo_pagamento', 'pix');
 
 -- Produtos
+-- Exemplo
+
+-- SELECT insercao_global('produto', 'id do desenvolvedor', 'id da categoria', 'nome do produto', 'descrição do produto', 'preco do produto', 'tipo do produto', 'status do produto', 'data da publicação do produto');
+
 -- Testada e validada
 SELECT insercao_global('produto', '1', '1', 'PhotoMaster', 'Editor de imagens profissional', '299.99', 'software', 'ativo', '2024-01-10');
 SELECT insercao_global('produto', '2', '2', 'NoteApp', 'Aplicativo de anotações rápido e prático', '19.99', 'software', 'ativo', '2024-02-05');
@@ -52,6 +64,10 @@ SELECT insercao_global('produto', '5', '8', 'LearnSpace', 'Plataforma de ensino 
 SELECT insercao_global('produto', '6', '9', 'GeoTrack', 'API para rastreamento em tempo real', '89.99', 'api', 'ativo', '2024-06-10');
 
 -- Softwares (ligados aos produtos 1, 2 e 5)
+-- Exemplo
+
+-- SELECT insercao_global('software', 'id do produto', 'nome da licença')
+
 -- Testada e validada
 SELECT insercao_global('software', '1', 'licença perpétua');
 SELECT insercao_global('software', '2', 'mensal');
@@ -65,6 +81,10 @@ SELECT insercao_global('api', '4', 'https://api.sendquick.io/v1');
 SELECT insercao_global('api', '7', 'https://api.geotrack.io');
 
 -- Versões
+-- Exemplo
+
+-- SELECT insercao_global('versão', 'id do produto', 'número da versão', 'data de lançamento');
+
 -- Testada e validada
 SELECT insercao_global('versao', '1', '1.0', '2024-01-15');
 SELECT insercao_global('versao', '1', '1.1', '2024-03-10');

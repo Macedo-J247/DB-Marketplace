@@ -29,7 +29,6 @@ CREATE OR REPLACE FUNCTION atualizar_desenvolvedor(u_id INT, u_nome VARCHAR, u_e
     BEGIN
         SELECT 1 INTO u_exists FROM "desenvolvedor"
         WHERE "id_desenvolvedor" = u_id;
-
         IF NOT FOUND THEN
             RAISE NOTICE 'Desenvolvedor não encontrado no banco de dados pelo ID repassado.';
             RETURN NULL;

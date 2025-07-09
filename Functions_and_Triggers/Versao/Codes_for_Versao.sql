@@ -169,3 +169,20 @@ CREATE FUNCTION contar_versao_por_produto(p_produto_id INT) RETURNS INT AS $$
 $$ LANGUAGE plpgsql;
 
 -- Triggers
+
+-- Atualizar data de atualização do produto toda vez que uma nova versão for cadastrada
+-- Testada e validada
+CREATE OR REPLACE FUNCTION atualizar_data_atualizacao_produto() RETURNS TRIGGER AS $$
+    BEGIN
+        UPDATE produto
+        SET data_atualizacao = NEW.data_lancamento
+        WHERE id_produto = NEW.produto_id;
+
+        RETURN NEW;
+    END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_atualiza_data_atualizacao
+AFTER INSERT ON versao
+FOR EACH ROW
+EXECUTE FUNCTION atualizar_data_atualizacao_produto();
